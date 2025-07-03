@@ -1,0 +1,265 @@
+/* Custom Order Workflow Styles */
+
+/* Pre-Quotation Form Enhancements */
+.pre-quotation-form .form-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #007bff;
+}
+
+.pre-quotation-form .form-section .section-head {
+    color: #495057;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.pre-quotation-form .form-section .section-head::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+/* Status Badge Styling */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.draft {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-badge.submitted-to-manufacturing {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-badge.costing-done {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.status-badge.approved-internally {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.status-badge.rejected {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+/* Table Specifications Styling */
+.specifications-table {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.specifications-table .table-header {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+.specifications-table .spec-row {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f3f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.specifications-table .spec-row:last-child {
+    border-bottom: none;
+}
+
+.specifications-table .spec-label {
+    font-weight: 500;
+    color: #6c757d;
+    min-width: 120px;
+}
+
+.specifications-table .spec-value {
+    color: #495057;
+    font-weight: 400;
+}
+
+/* Custom Buttons */
+.btn-custom-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-custom-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-custom-secondary {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-custom-secondary:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+/* Workspace Shortcuts Enhancement */
+.workspace-shortcuts .shortcut-widget {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.workspace-shortcuts .shortcut-widget:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+}
+
+.workspace-shortcuts .shortcut-widget.blue {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.workspace-shortcuts .shortcut-widget.orange {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.workspace-shortcuts .shortcut-widget.green {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Form Field Enhancements */
+.form-group .control-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-group .form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+}
+
+.form-group .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* List View Enhancements */
+.list-row {
+    transition: all 0.3s ease;
+}
+
+.list-row:hover {
+    background: #f8f9fa;
+    transform: translateX(4px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .pre-quotation-form .form-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .specifications-table .spec-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 16px;
+    }
+    
+    .specifications-table .spec-label {
+        margin-bottom: 4px;
+        min-width: auto;
+    }
+    
+    .btn-custom-primary,
+    .btn-custom-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Loading States */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages */
+.alert-custom-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid #b8dacc;
+    color: #155724;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+}
+
+.alert-custom-error {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border: 1px solid #f1b0b7;
+    color: #721c24;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+}
+

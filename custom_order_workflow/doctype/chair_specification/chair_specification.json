@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "chair_model",
+  "upholstery_material",
+  "color",
+  "column_break_4",
+  "armrests",
+  "base_type",
+  "features"
+ ],
+ "fields": [
+  {
+   "fieldname": "chair_model",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Chair Model/Style"
+  },
+  {
+   "fieldname": "upholstery_material",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Upholstery Material"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Color"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "armrests",
+   "fieldtype": "Select",
+   "label": "Armrests",
+   "options": "Fixed\nAdjustable\nNone"
+  },
+  {
+   "fieldname": "base_type",
+   "fieldtype": "Select",
+   "label": "Base Type",
+   "options": "Caster\nSled\nSwivel"
+  },
+  {
+   "fieldname": "features",
+   "fieldtype": "Text",
+   "label": "Special Features"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Order Workflow",
+ "name": "Chair Specification",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
+

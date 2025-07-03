@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "length",
+  "width",
+  "height",
+  "column_break_4",
+  "material_top",
+  "finish_top",
+  "material_legs",
+  "color",
+  "features"
+ ],
+ "fields": [
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Length (cm)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Width (cm)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Height (cm)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "material_top",
+   "fieldtype": "Data",
+   "label": "Top Material"
+  },
+  {
+   "fieldname": "finish_top",
+   "fieldtype": "Data",
+   "label": "Top Finish"
+  },
+  {
+   "fieldname": "material_legs",
+   "fieldtype": "Data",
+   "label": "Legs/Base Material"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Data",
+   "label": "Color"
+  },
+  {
+   "fieldname": "features",
+   "fieldtype": "Text",
+   "label": "Special Features"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Order Workflow",
+ "name": "Table Specification",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
+
