@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:category_id",
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "category_id",
+  "category_name",
+  "icon",
+  "description",
+  "column_break_5",
+  "sort_order",
+  "is_active"
+ ],
+ "fields": [
+  {
+   "fieldname": "category_id",
+   "fieldtype": "Data",
+   "label": "Category ID",
+   "reqd": 1,
+   "unique": 1,
+   "description": "Unique identifier for the category (e.g., FURN, STRUCT)"
+  },
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "label": "Category Name",
+   "reqd": 1,
+   "description": "Display name for the category"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Data",
+   "label": "Icon",
+   "description": "Emoji or icon code to display"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description",
+   "description": "Brief description of the category"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Sort Order",
+   "default": 0,
+   "description": "Display order (1 = first)"
+  },
+  {
+   "default": 1,
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Order Workflow",
+ "name": "Visual Category",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Sales User"
+  }
+ ],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1,
+ "title_field": "category_name"
+}
+

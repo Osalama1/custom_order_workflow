@@ -18,8 +18,9 @@
   "status",
   "section_break_9",
   "notes",
+  "visual_selector_section",
+  "visual_selector_html",
   "section_break_11",
-  "visual_items_data",
   "custom_furniture_items",
   "section_break_13",
   "total_material_cost",
@@ -49,8 +50,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer",
-   "reqd": 1
+   "options": "Customer"
   },
   {
    "fieldname": "contact_person",
@@ -83,7 +83,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Draft\nSubmitted to Manufacturing\nCosting Done\nApproved Internally\nRejected",
+   "options": "Draft\\nSubmitted\\nApproved\\nRejected\\nCancelled",
    "reqd": 1
   },
   {
@@ -93,8 +93,19 @@
   },
   {
    "fieldname": "notes",
-   "fieldtype": "Text",
+   "fieldtype": "Text Editor",
    "label": "Notes"
+  },
+  {
+   "fieldname": "visual_selector_section",
+   "fieldtype": "Section Break",
+   "label": "Visual Item Selector"
+  },
+  {
+   "fieldname": "visual_selector_html",
+   "fieldtype": "HTML",
+   "label": "Visual Selector",
+   "options": "<div id='visual-selector-container'></div>"
   },
   {
    "fieldname": "section_break_11",
@@ -102,18 +113,10 @@
    "label": "Custom Furniture Items"
   },
   {
-   "fieldname": "visual_items_data",
-   "fieldtype": "Long Text",
-   "label": "Visual Items Data",
-   "hidden": 1,
-   "description": "JSON data from visual selector"
-  },
-  {
    "fieldname": "custom_furniture_items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Pre-Quotation Item",
-   "reqd": 1
+   "options": "Pre-Quotation Item"
   },
   {
    "fieldname": "section_break_13",
@@ -124,22 +127,19 @@
    "fieldname": "total_material_cost",
    "fieldtype": "Currency",
    "label": "Total Material Cost",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "total_labor_cost",
    "fieldtype": "Currency",
    "label": "Total Labor Cost",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "total_overhead_cost",
    "fieldtype": "Currency",
    "label": "Total Overhead Cost",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "column_break_pricing",
@@ -149,29 +149,25 @@
    "fieldname": "estimated_total_cost",
    "fieldtype": "Currency",
    "label": "Total Cost",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "estimated_selling_price",
    "fieldtype": "Currency",
    "label": "Total Selling Price",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "total_profit_amount",
    "fieldtype": "Currency",
    "label": "Total Profit",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   },
   {
    "fieldname": "overall_profit_margin",
    "fieldtype": "Percent",
    "label": "Overall Profit Margin %",
-   "read_only": 1,
-   "precision": 2
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -192,37 +188,30 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Sales Manager",
+   "role": "System Manager",
    "share": 1,
    "submit": 1,
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "print": 1,
+   "create": 1,
    "read": 1,
    "report": 1,
-   "role": "Manufacturing User",
-   "share": 1,
+   "role": "Sales Manager",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Sales User",
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "title_field": "customer"
 }
 

@@ -1,94 +1,86 @@
 [
- {
-  "doctype": "Workflow",
-  "name": "Pre-Quotation Workflow",
-  "document_type": "Pre-Quotation",
-  "workflow_name": "Pre-Quotation Workflow",
-  "is_active": 1,
-  "send_email_alert": 1,
-  "workflow_state_field": "status",
-  "states": [
-   {
-    "state": "Draft",
-    "doc_status": "0",
-    "allow_edit": "Sales User",
-    "is_optional_state": 0
-   },
-   {
-    "state": "Submitted to Manufacturing",
-    "doc_status": "1",
-    "allow_edit": "Manufacturing User",
-    "is_optional_state": 0
-   },
-   {
-    "state": "Costing Done",
-    "doc_status": "1",
-    "allow_edit": "Sales Manager",
-    "is_optional_state": 0
-   },
-   {
-    "state": "Approved Internally",
-    "doc_status": "1",
-    "allow_edit": "Sales Manager",
-    "is_optional_state": 0
-   },
-   {
-    "state": "Rejected",
-    "doc_status": "2",
-    "allow_edit": "",
-    "is_optional_state": 0
-   }
-  ],
-  "transitions": [
-   {
-    "state": "Draft",
-    "action": "Submit to Manufacturing",
-    "next_state": "Submitted to Manufacturing",
-    "allowed": "Sales User",
-    "allow_self_approval": 0,
-    "condition": ""
-   },
-   {
-    "state": "Draft",
-    "action": "Reject",
-    "next_state": "Rejected",
-    "allowed": "Sales Manager",
-    "allow_self_approval": 0,
-    "condition": ""
-   },
-   {
-    "state": "Submitted to Manufacturing",
-    "action": "Complete Costing",
-    "next_state": "Costing Done",
-    "allowed": "Manufacturing User",
-    "allow_self_approval": 0,
-    "condition": ""
-   },
-   {
-    "state": "Submitted to Manufacturing",
-    "action": "Reject",
-    "next_state": "Rejected",
-    "allowed": "Manufacturing User",
-    "allow_self_approval": 0,
-    "condition": ""
-   },
-   {
-    "state": "Costing Done",
-    "action": "Approve Internally",
-    "next_state": "Approved Internally",
-    "allowed": "Sales Manager",
-    "allow_self_approval": 0,
-    "condition": ""
-   },
-   {
-    "state": "Costing Done",
-    "action": "Reject",
-    "next_state": "Rejected",
-    "allowed": "Sales Manager",
-    "allow_self_approval": 0,
-    "condition": ""
-   }
-  ]
- }
-]
-
+    {
+     "doctype": "Workflow",
+     "name": "Pre-Quotation Workflow",
+     "document_type": "Pre-Quotation",
+     "workflow_name": "Pre-Quotation Workflow",
+     "is_active": 1,
+     "send_email_alert": 1,
+     "workflow_state_field": "status",
+     "states": [
+      {
+       "state": "Draft",
+       "doc_status": 0,
+       "allow_edit": "Sales User",
+       "is_optional_state": 0
+      },
+      {
+       "state": "Submitted to Manufacturing",
+       "doc_status": 1,
+       "allow_edit": "Manufacturing User",
+       "is_optional_state": 0
+      },
+      {
+       "state": "Costing Done",
+       "doc_status": 1,
+       "allow_edit": "Sales Manager",
+       "is_optional_state": 0
+      },
+      {
+       "state": "Approved Internally",
+       "doc_status": 1,
+       "allow_edit": "Sales Manager",
+       "is_optional_state": 0
+      },
+      {
+       "state": "Rejected",
+       "doc_status": 2,
+       "allow_edit": "Sales Manager",
+       "is_optional_state": 0
+      }
+     ],
+     "transitions": [
+      {
+       "state": "Draft",
+       "action": "Submit to Manufacturing",
+       "next_state": "Submitted to Manufacturing",
+       "allowed": "Sales User",
+       "allow_self_approval": 0,
+       "condition": ""
+      },
+      {
+       "state": "Submitted to Manufacturing",
+       "action": "Complete Costing",
+       "next_state": "Costing Done",
+       "allowed": "Manufacturing User",
+       "allow_self_approval": 0,
+       "condition": ""
+      },
+      {
+       "state": "Submitted to Manufacturing",
+       "action": "Reject",
+       "next_state": "Rejected",
+       "allowed": "Manufacturing User",
+       "allow_self_approval": 0,
+       "condition": ""
+      },
+      {
+       "state": "Costing Done",
+       "action": "Approve Internally",
+       "next_state": "Approved Internally",
+       "allowed": "Sales Manager",
+       "allow_self_approval": 0,
+       "condition": ""
+      },
+      {
+       "state": "Costing Done",
+       "action": "Reject",
+       "next_state": "Rejected",
+       "allowed": "Sales Manager",
+       "allow_self_approval": 0,
+       "condition": ""
+      }
+     ]
+    }
+   ]
+   

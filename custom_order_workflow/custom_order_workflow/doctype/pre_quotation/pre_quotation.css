@@ -1,0 +1,262 @@
+/* Visual Selector Styles for Pre-Quotation */
+
+.visual-selector {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.selector-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.selector-header h4 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.selector-header p {
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.categories-container,
+.subcategories-grid,
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.category-card,
+.subcategory-card,
+.item-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.category-card:hover,
+.subcategory-card:hover,
+.item-card:hover {
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.category-icon,
+.subcategory-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.category-name,
+.subcategory-name,
+.item-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.category-description,
+.subcategory-description {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.item-image {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.item-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.no-image {
+    font-size: 3rem;
+    color: #dee2e6;
+}
+
+.item-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #28a745;
+    margin-bottom: 2px;
+}
+
+.item-unit {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.selector-breadcrumb {
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.breadcrumb-item {
+    color: #007bff;
+    font-weight: 500;
+}
+
+.breadcrumb-item.active {
+    color: #2c3e50;
+}
+
+.breadcrumb-separator {
+    margin: 0 8px;
+    color: #6c757d;
+}
+
+.item-details {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.item-header h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.item-header p {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.item-specifications h5 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 5px;
+}
+
+.specs-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.spec-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-field label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.spec-input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.spec-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.quantity-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.quantity-section label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.quantity-input {
+    width: 120px;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.add-item-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.add-item-btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    min-width: 200px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .categories-container,
+    .subcategories-grid,
+    .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .category-card,
+    .subcategory-card,
+    .item-card {
+        padding: 15px;
+    }
+    
+    .specs-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .visual-selector {
+        padding: 15px;
+    }
+}
+
+/* Animation for smooth transitions */
+.subcategories-container,
+.items-container,
+.item-details-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

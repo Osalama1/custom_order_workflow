@@ -4,360 +4,351 @@
 import frappe
 import json
 from frappe import _
-from frappe.utils import nowdate, flt, cint
-from frappe.model.document import Document
-
+from frappe.utils import flt, cint, nowdate
 
 @frappe.whitelist()
-def create_quotation_from_pre_quotation(pre_quotation):
-    """Create a standard ERPNext Quotation from Pre-Quotation"""
+def get_visual_selector_data():
+    """
+    Get all visual selector data organized hierarchically
     
+    Returns:
+        dict: Complete data structure for visual selector
+    """
     try:
-        # Get the pre-quotation document
-        pre_quote_doc = frappe.get_doc("Pre-Quotation", pre_quotation)
+        # Get categories
+        categories = frappe.get_all('Visual Category', 
+                                  filters={'is_active': 1},
+                                  fields=['name', 'category_name', 'icon', 'description'],
+                                  order_by='sort_order')
         
-        if pre_quote_doc.status != "Approved Internally":
-            frappe.throw(_("Pre-Quotation must be approved internally before creating quotation"))
+        # Get subcategories
+        subcategories = frappe.get_all('Visual Subcategory',
+                                     filters={'is_active': 1},
+                                     fields=['name', 'category', 'subcategory_name', 'icon', 'description'],
+                                     order_by='sort_order')
         
-        # Create customer if not exists
-        customer = ensure_customer_exists(pre_quote_doc)
+        # Get items with specifications
+        items = frappe.get_all('Visual Item Master',
+                             filters={'is_active': 1},
+                             fields=['name', 'subcategory', 'item_name', 'description', 
+                                   'base_cost', 'base_price', 'unit'])
         
-        # Create items first
-        created_items = create_items_from_pre_quotation(pre_quotation)
+        # Organize data hierarchically
+        data = {}
+        
+        for category in categories:
+            cat_id = category['name']
+            data[cat_id] = {
+                'name': category['category_name'],
+                'icon': category['icon'],
+                'description': category['description'],
+                'subcategories': {}
+            }
+            
+            # Add subcategories
+            for subcategory in subcategories:
+                if subcategory['category'] == cat_id:
+                    subcat_id = subcategory['name']
+                    data[cat_id]['subcategories'][subcat_id] = {
+                        'name': subcategory['subcategory_name'],
+                        'icon': subcategory['icon'],
+                        'description': subcategory['description'],
+                        'items': {}
+                    }
+                    
+                    # Add items
+                    for item in items:
+                        if item['subcategory'] == subcat_id:
+                            item_id = item['name']
+                            
+                            # Get item specifications
+                            item_doc = frappe.get_doc('Visual Item Master', item_id)
+                            specifications = {}
+                            
+                            for spec in item_doc.specifications:
+                                specifications[spec.spec_name] = {
+                                    'name': spec.spec_name,
+                                    'type': spec.spec_type,
+                                    'options': spec.options.split(',') if spec.options else [],
+                                    'default_value': spec.default_value,
+                                    'price_modifier': [float(x.strip()) for x in spec.price_modifier.split(',') if x.strip()] if spec.price_modifier else [],
+                                    'is_required': spec.is_required
+                                }
+                            
+                            # Get primary image
+                            primary_image = item_doc.get_primary_image()
+                            
+                            data[cat_id]['subcategories'][subcat_id]['items'][item_id] = {
+                                'name': item['item_name'],
+                                'description': item['description'],
+                                'base_cost': item['base_cost'],
+                                'base_price': item['base_price'],
+                                'unit': item['unit'],
+                                'image_url': primary_image,
+                                'specifications': specifications
+                            }
+        
+        return data
+        
+    except Exception as e:
+        frappe.log_error(f"Get Visual Selector Data Error: {str(e)}")
+        return {'error': str(e)}
+
+@frappe.whitelist()
+def calculate_item_price(item_id, specifications, quantity=1):
+    """
+    Calculate final price for an item based on specifications
+    
+    Args:
+        item_id (str): Item ID
+        specifications (dict): Selected specifications
+        quantity (int): Quantity
+        
+    Returns:
+        dict: Calculated pricing details
+    """
+    try:
+        if isinstance(specifications, str):
+            specifications = json.loads(specifications)
+        
+        quantity = int(quantity)
+        
+        # Get base item
+        item = frappe.get_doc('Visual Item Master', item_id)
+        base_cost = item.base_cost
+        base_price = item.base_price
+        
+        total_modifier = 0
+        
+        # Calculate modifiers based on selected specifications
+        for spec in item.specifications:
+            spec_name = spec.spec_name
+            if spec_name in specifications:
+                selected_value = specifications[spec_name]
+                options = spec.options.split(',') if spec.options else []
+                modifiers = [float(x.strip()) for x in spec.price_modifier.split(',') if x.strip()] if spec.price_modifier else []
+                
+                # Find the index of selected option
+                if selected_value in options and len(modifiers) > options.index(selected_value):
+                    modifier_index = options.index(selected_value)
+                    total_modifier += modifiers[modifier_index]
+        
+        # Calculate final prices
+        final_cost = base_cost * (1 + total_modifier / 100)
+        final_price = base_price * (1 + total_modifier / 100)
+        
+        total_cost = final_cost * quantity
+        total_price = final_price * quantity
+        profit = total_price - total_cost
+        profit_margin = (profit / total_cost * 100) if total_cost > 0 else 0
+        
+        return {
+            'base_cost': base_cost,
+            'base_price': base_price,
+            'final_cost': final_cost,
+            'final_price': final_price,
+            'total_cost': total_cost,
+            'total_price': total_price,
+            'profit': profit,
+            'profit_margin': profit_margin,
+            'quantity': quantity,
+            'unit': item.unit
+        }
+        
+    except Exception as e:
+        frappe.log_error(f"Calculate Item Price Error: {str(e)}")
+        return {'error': str(e)}
+
+@frappe.whitelist()
+def create_quotation_from_pre_quotation(pre_quotation_name):
+    """
+    Create ERPNext Quotation from Pre-Quotation
+    
+    Args:
+        pre_quotation_name (str): Pre-Quotation document name
+        
+    Returns:
+        str: Created Quotation name
+    """
+    try:
+        # Get pre-quotation
+        pre_quotation = frappe.get_doc('Pre-Quotation', pre_quotation_name)
+        
+        if pre_quotation.docstatus != 1:
+            frappe.throw(_("Pre-Quotation must be submitted before creating quotation"))
         
         # Create quotation
-        quotation = frappe.new_doc("Quotation")
-        quotation.quotation_to = "Customer"
-        quotation.party_name = customer
+        quotation = frappe.new_doc('Quotation')
+        quotation.quotation_to = 'Customer'
+        quotation.party_name = pre_quotation.customer
         quotation.transaction_date = nowdate()
-        quotation.valid_till = pre_quote_doc.valid_until or nowdate()
-        quotation.order_type = "Sales"
-        quotation.custom_pre_quotation = pre_quotation
+        quotation.valid_till = pre_quotation.valid_until
         
-        # Add items to quotation
-        for pre_item in pre_quote_doc.custom_furniture_items:
-            if pre_item.item_code and created_items.get(pre_item.item_code):
-                quotation_item = quotation.append("items")
-                quotation_item.item_code = pre_item.item_code
-                quotation_item.item_name = pre_item.item_name
-                quotation_item.description = pre_item.description
-                quotation_item.qty = pre_item.quantity
-                quotation_item.uom = pre_item.uom
-                quotation_item.rate = pre_item.selling_price or 0
-                quotation_item.amount = quotation_item.qty * quotation_item.rate
+        # Add items
+        for item in pre_quotation.custom_furniture_items:
+            # Create item if it doesn't exist
+            item_code = create_item_from_pre_quotation_item(item)
+            
+            quotation_item = quotation.append('items')
+            quotation_item.item_code = item_code
+            quotation_item.item_name = item.item_name
+            quotation_item.description = item.item_description
+            quotation_item.qty = item.quantity
+            quotation_item.uom = item.unit
+            quotation_item.rate = item.selling_price_per_unit
+            quotation_item.amount = item.total_selling_amount
         
-        # Save and submit quotation
         quotation.insert()
-        quotation.submit()
         
         # Update pre-quotation status
-        pre_quote_doc.status = "Quotation Generated"
-        pre_quote_doc.save()
+        pre_quotation.db_set('status', 'Converted to Quotation')
         
         return quotation.name
         
     except Exception as e:
-        frappe.log_error(f"Error creating quotation from pre-quotation {pre_quotation}: {str(e)}")
+        frappe.log_error(f"Create Quotation Error: {str(e)}")
         frappe.throw(_("Error creating quotation: {0}").format(str(e)))
 
+def create_item_from_pre_quotation_item(pre_quotation_item):
+    """
+    Create ERPNext Item from Pre-Quotation Item
+    
+    Args:
+        pre_quotation_item: Pre-Quotation Item child table row
+        
+    Returns:
+        str: Item code
+    """
+    try:
+        # Generate item code
+        item_code = f"CUSTOM-{pre_quotation_item.item_name.upper().replace(' ', '-')}"
+        
+        # Check if item already exists
+        if frappe.db.exists('Item', item_code):
+            return item_code
+        
+        # Create new item
+        item = frappe.new_doc('Item')
+        item.item_code = item_code
+        item.item_name = pre_quotation_item.item_name
+        item.description = pre_quotation_item.item_description
+        item.item_group = 'Custom Furniture'  # Create this item group if needed
+        item.stock_uom = pre_quotation_item.unit
+        item.is_stock_item = 1
+        item.include_item_in_manufacturing = 1
+        item.valuation_rate = pre_quotation_item.material_cost or 0
+        
+        # Set item defaults
+        item.append('item_defaults', {
+            'company': frappe.defaults.get_user_default('Company'),
+            'default_warehouse': frappe.db.get_single_value('Stock Settings', 'default_warehouse')
+        })
+        
+        item.insert()
+        
+        return item.item_code
+        
+    except Exception as e:
+        frappe.log_error(f"Create Item Error: {str(e)}")
+        return None
 
 @frappe.whitelist()
-def create_items_from_pre_quotation(pre_quotation):
-    """Create ERPNext Items from Pre-Quotation items"""
+def get_item_specifications(item_id):
+    """
+    Get specifications for a specific item
     
-    try:
-        # Get the pre-quotation document
-        pre_quote_doc = frappe.get_doc("Pre-Quotation", pre_quotation)
-        created_items = {}
+    Args:
+        item_id (str): Visual Item Master ID
         
-        for pre_item in pre_quote_doc.custom_furniture_items:
-            if not pre_item.item_code:
-                continue
+    Returns:
+        dict: Item specifications
+    """
+    try:
+        item = frappe.get_doc('Visual Item Master', item_id)
+        return item.get_specifications_dict()
+        
+    except Exception as e:
+        frappe.log_error(f"Get Item Specifications Error: {str(e)}")
+        return {'error': str(e)}
+
+@frappe.whitelist()
+def create_sample_data():
+    """
+    Create sample data for testing the visual selector
+    """
+    try:
+        # Create sample categories
+        categories = [
+            {'category_id': 'FURN', 'category_name': 'Furniture', 'icon': '🪑', 'description': 'Office furniture items'},
+            {'category_id': 'STRUCT', 'category_name': 'Structures', 'icon': '🏗️', 'description': 'Building structures'},
+            {'category_id': 'SERV', 'category_name': 'Services', 'icon': '🔧', 'description': 'Installation services'}
+        ]
+        
+        for cat_data in categories:
+            if not frappe.db.exists('Visual Category', cat_data['category_id']):
+                cat = frappe.new_doc('Visual Category')
+                cat.update(cat_data)
+                cat.insert()
+        
+        # Create sample subcategories
+        subcategories = [
+            {'subcategory_id': 'FURN_TABLES', 'category': 'FURN', 'subcategory_name': 'Tables', 'icon': '🪑'},
+            {'subcategory_id': 'FURN_CHAIRS', 'category': 'FURN', 'subcategory_name': 'Chairs', 'icon': '💺'},
+            {'subcategory_id': 'STRUCT_FLOOR', 'category': 'STRUCT', 'subcategory_name': 'Flooring', 'icon': '🔲'}
+        ]
+        
+        for subcat_data in subcategories:
+            if not frappe.db.exists('Visual Subcategory', subcat_data['subcategory_id']):
+                subcat = frappe.new_doc('Visual Subcategory')
+                subcat.update(subcat_data)
+                subcat.insert()
+        
+        # Create sample items
+        items = [
+            {
+                'item_id': 'EXEC_DESK_001',
+                'subcategory': 'FURN_TABLES',
+                'item_name': 'Executive Desk',
+                'description': 'Large executive desk with drawers',
+                'base_cost': 300.00,
+                'base_price': 375.00,
+                'unit': 'pcs',
+                'specifications': [
+                    {'spec_name': 'Material', 'spec_type': 'Select', 'options': 'Wood,Metal,Glass', 'default_value': 'Wood', 'price_modifier': '0,10,30'},
+                    {'spec_name': 'Size', 'spec_type': 'Select', 'options': 'Small,Medium,Large', 'default_value': 'Medium', 'price_modifier': '0,20,50'},
+                    {'spec_name': 'Color', 'spec_type': 'Select', 'options': 'Brown,Black,White', 'default_value': 'Brown', 'price_modifier': '0,0,5'}
+                ]
+            },
+            {
+                'item_id': 'OFFICE_CHAIR_001',
+                'subcategory': 'FURN_CHAIRS',
+                'item_name': 'Office Chair',
+                'description': 'Ergonomic office chair',
+                'base_cost': 100.00,
+                'base_price': 125.00,
+                'unit': 'pcs',
+                'specifications': [
+                    {'spec_name': 'Material', 'spec_type': 'Select', 'options': 'Fabric,Leather,Mesh', 'default_value': 'Fabric', 'price_modifier': '0,30,15'},
+                    {'spec_name': 'Color', 'spec_type': 'Select', 'options': 'Black,Gray,Blue', 'default_value': 'Black', 'price_modifier': '0,0,5'}
+                ]
+            }
+        ]
+        
+        for item_data in items:
+            if not frappe.db.exists('Visual Item Master', item_data['item_id']):
+                item = frappe.new_doc('Visual Item Master')
+                specs = item_data.pop('specifications')
+                item.update(item_data)
                 
-            # Check if item already exists
-            if frappe.db.exists("Item", pre_item.item_code):
-                created_items[pre_item.item_code] = pre_item.item_code
-                continue
-            
-            # Create new item
-            item = frappe.new_doc("Item")
-            item.item_code = pre_item.item_code
-            item.item_name = pre_item.item_name
-            item.description = pre_item.description
-            item.item_group = get_or_create_item_group("Custom Furniture")
-            item.stock_uom = pre_item.uom or "Nos"
-            item.is_stock_item = 1
-            item.is_sales_item = 1
-            item.is_purchase_item = 1
-            item.valuation_rate = pre_item.estimated_cost or 0
-            item.standard_rate = pre_item.selling_price or 0
-            
-            # Add custom fields for specifications
-            if hasattr(item, 'custom_specifications') and pre_item.specifications:
-                item.custom_specifications = pre_item.specifications
-            
-            if hasattr(item, 'custom_manufacturing_notes') and pre_item.notes:
-                item.custom_manufacturing_notes = pre_item.notes
-            
-            # Set item defaults
-            item.append("item_defaults", {
-                "company": frappe.defaults.get_user_default("Company"),
-                "default_warehouse": get_default_warehouse(),
-                "expense_account": get_default_expense_account(),
-                "income_account": get_default_income_account()
-            })
-            
-            item.insert()
-            created_items[pre_item.item_code] = item.name
+                for spec_data in specs:
+                    item.append('specifications', spec_data)
+                
+                item.insert()
         
-        return created_items
+        frappe.db.commit()
+        return {'message': 'Sample data created successfully'}
         
     except Exception as e:
-        frappe.log_error(f"Error creating items from pre-quotation {pre_quotation}: {str(e)}")
-        frappe.throw(_("Error creating items: {0}").format(str(e)))
-
-
-@frappe.whitelist()
-def get_visual_selector_data(pre_quotation):
-    """Get visual selector data for a pre-quotation"""
-    
-    try:
-        pre_quote_doc = frappe.get_doc("Pre-Quotation", pre_quotation)
-        
-        if pre_quote_doc.visual_items_data:
-            return json.loads(pre_quote_doc.visual_items_data)
-        
-        return []
-        
-    except Exception as e:
-        frappe.log_error(f"Error getting visual selector data for {pre_quotation}: {str(e)}")
-        return []
-
-
-@frappe.whitelist()
-def save_visual_selector_data(pre_quotation, visual_data):
-    """Save visual selector data to pre-quotation"""
-    
-    try:
-        pre_quote_doc = frappe.get_doc("Pre-Quotation", pre_quotation)
-        pre_quote_doc.visual_items_data = json.dumps(visual_data)
-        pre_quote_doc.save()
-        
-        return {"success": True}
-        
-    except Exception as e:
-        frappe.log_error(f"Error saving visual selector data for {pre_quotation}: {str(e)}")
-        frappe.throw(_("Error saving visual data: {0}").format(str(e)))
-
-
-@frappe.whitelist()
-def get_dashboard_data():
-    """Get dashboard data for sales team"""
-    
-    try:
-        # Get current user's pre-quotations
-        user_pre_quotations = frappe.db.get_list(
-            "Pre-Quotation",
-            filters={"owner": frappe.session.user},
-            fields=["name", "status", "pre_quotation_date", "customer", "estimated_selling_price"],
-            order_by="pre_quotation_date desc",
-            limit=10
-        )
-        
-        # Get status summary
-        status_summary = frappe.db.sql("""
-            SELECT status, COUNT(*) as count
-            FROM `tabPre-Quotation`
-            WHERE owner = %s
-            GROUP BY status
-        """, (frappe.session.user,), as_dict=True)
-        
-        # Get monthly statistics
-        monthly_stats = frappe.db.sql("""
-            SELECT 
-                MONTH(pre_quotation_date) as month,
-                YEAR(pre_quotation_date) as year,
-                COUNT(*) as total_quotes,
-                SUM(CASE WHEN status = 'Quotation Generated' THEN 1 ELSE 0 END) as converted,
-                SUM(estimated_selling_price) as total_value
-            FROM `tabPre-Quotation`
-            WHERE owner = %s AND pre_quotation_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-            GROUP BY YEAR(pre_quotation_date), MONTH(pre_quotation_date)
-            ORDER BY year DESC, month DESC
-        """, (frappe.session.user,), as_dict=True)
-        
-        return {
-            "recent_pre_quotations": user_pre_quotations,
-            "status_summary": status_summary,
-            "monthly_stats": monthly_stats
-        }
-        
-    except Exception as e:
-        frappe.log_error(f"Error getting dashboard data: {str(e)}")
-        return {}
-
-
-def ensure_customer_exists(pre_quote_doc):
-    """Ensure customer exists, create if needed"""
-    
-    if pre_quote_doc.customer:
-        return pre_quote_doc.customer
-    
-    if pre_quote_doc.lead:
-        # Try to get customer from lead
-        lead_doc = frappe.get_doc("Lead", pre_quote_doc.lead)
-        if lead_doc.customer:
-            return lead_doc.customer
-        
-        # Create customer from lead
-        customer = frappe.new_doc("Customer")
-        customer.customer_name = lead_doc.lead_name or lead_doc.company_name
-        customer.customer_type = "Company" if lead_doc.company_name else "Individual"
-        customer.customer_group = "Commercial" if lead_doc.company_name else "Individual"
-        customer.territory = lead_doc.territory or "All Territories"
-        
-        if lead_doc.email_id:
-            customer.email_id = lead_doc.email_id
-        
-        if lead_doc.mobile_no:
-            customer.mobile_no = lead_doc.mobile_no
-        
-        customer.insert()
-        
-        # Update lead with customer
-        lead_doc.customer = customer.name
-        lead_doc.save()
-        
-        return customer.name
-    
-    # Create generic customer
-    customer = frappe.new_doc("Customer")
-    customer.customer_name = pre_quote_doc.contact_person or "Walk-in Customer"
-    customer.customer_type = "Individual"
-    customer.customer_group = "Individual"
-    customer.territory = "All Territories"
-    
-    if pre_quote_doc.contact_email:
-        customer.email_id = pre_quote_doc.contact_email
-    
-    customer.insert()
-    return customer.name
-
-
-def get_or_create_item_group(group_name):
-    """Get or create item group"""
-    
-    if frappe.db.exists("Item Group", group_name):
-        return group_name
-    
-    item_group = frappe.new_doc("Item Group")
-    item_group.item_group_name = group_name
-    item_group.parent_item_group = "All Item Groups"
-    item_group.is_group = 0
-    item_group.insert()
-    
-    return item_group.name
-
-
-def get_default_warehouse():
-    """Get default warehouse"""
-    
-    company = frappe.defaults.get_user_default("Company")
-    if company:
-        warehouses = frappe.db.get_list("Warehouse", 
-            filters={"company": company, "is_group": 0}, 
-            limit=1
-        )
-        if warehouses:
-            return warehouses[0].name
-    
-    return None
-
-
-def get_default_expense_account():
-    """Get default expense account"""
-    
-    company = frappe.defaults.get_user_default("Company")
-    if company:
-        accounts = frappe.db.get_list("Account", 
-            filters={
-                "company": company, 
-                "account_type": "Expense Account",
-                "is_group": 0
-            }, 
-            limit=1
-        )
-        if accounts:
-            return accounts[0].name
-    
-    return None
-
-
-def get_default_income_account():
-    """Get default income account"""
-    
-    company = frappe.defaults.get_user_default("Company")
-    if company:
-        accounts = frappe.db.get_list("Account", 
-            filters={
-                "company": company, 
-                "account_type": "Income Account",
-                "is_group": 0
-            }, 
-            limit=1
-        )
-        if accounts:
-            return accounts[0].name
-    
-    return None
-
-
-@frappe.whitelist()
-def get_conversion_stats():
-    """Get conversion statistics for management dashboard"""
-    
-    try:
-        # Overall conversion stats
-        total_pre_quotations = frappe.db.count("Pre-Quotation")
-        converted_quotations = frappe.db.count("Pre-Quotation", {"status": "Quotation Generated"})
-        
-        conversion_rate = (converted_quotations / total_pre_quotations * 100) if total_pre_quotations > 0 else 0
-        
-        # Monthly trend
-        monthly_trend = frappe.db.sql("""
-            SELECT 
-                DATE_FORMAT(pre_quotation_date, '%Y-%m') as month,
-                COUNT(*) as total,
-                SUM(CASE WHEN status = 'Quotation Generated' THEN 1 ELSE 0 END) as converted,
-                SUM(estimated_selling_price) as total_value
-            FROM `tabPre-Quotation`
-            WHERE pre_quotation_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-            GROUP BY DATE_FORMAT(pre_quotation_date, '%Y-%m')
-            ORDER BY month DESC
-        """, as_dict=True)
-        
-        # Sales person performance
-        sales_performance = frappe.db.sql("""
-            SELECT 
-                owner,
-                COUNT(*) as total_quotes,
-                SUM(CASE WHEN status = 'Quotation Generated' THEN 1 ELSE 0 END) as converted,
-                SUM(estimated_selling_price) as total_value
-            FROM `tabPre-Quotation`
-            WHERE pre_quotation_date >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
-            GROUP BY owner
-            ORDER BY converted DESC
-        """, as_dict=True)
-        
-        return {
-            "total_pre_quotations": total_pre_quotations,
-            "converted_quotations": converted_quotations,
-            "conversion_rate": conversion_rate,
-            "monthly_trend": monthly_trend,
-            "sales_performance": sales_performance
-        }
-        
-    except Exception as e:
-        frappe.log_error(f"Error getting conversion stats: {str(e)}")
-        return {}
+        frappe.log_error(f"Create Sample Data Error: {str(e)}")
+        return {'error': str(e)}
 

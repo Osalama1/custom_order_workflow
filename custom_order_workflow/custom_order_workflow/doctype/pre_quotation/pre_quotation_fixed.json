@@ -1,0 +1,217 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "lead",
+  "customer",
+  "contact_person",
+  "contact_email",
+  "column_break_5",
+  "pre_quotation_date",
+  "valid_until",
+  "status",
+  "section_break_9",
+  "notes",
+  "visual_selector_section",
+  "visual_selector_html",
+  "section_break_11",
+  "custom_furniture_items",
+  "section_break_13",
+  "total_material_cost",
+  "total_labor_cost",
+  "total_overhead_cost",
+  "column_break_pricing",
+  "estimated_total_cost",
+  "estimated_selling_price",
+  "total_profit_amount",
+  "overall_profit_margin"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "PRE-QTN-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lead",
+   "fieldtype": "Link",
+   "label": "Lead",
+   "options": "Lead"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "contact_email",
+   "fieldtype": "Data",
+   "label": "Contact Email"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "pre_quotation_date",
+   "fieldtype": "Date",
+   "label": "Pre-Quotation Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_until",
+   "fieldtype": "Date",
+   "label": "Valid Until"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\\nSubmitted\\nApproved\\nRejected\\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Customer Requirements"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "visual_selector_section",
+   "fieldtype": "Section Break",
+   "label": "Visual Item Selector"
+  },
+  {
+   "fieldname": "visual_selector_html",
+   "fieldtype": "HTML",
+   "label": "Visual Selector",
+   "options": "<div id='visual-selector-container'></div>"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break",
+   "label": "Custom Furniture Items"
+  },
+  {
+   "fieldname": "custom_furniture_items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Pre-Quotation Item"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "Pricing Summary"
+  },
+  {
+   "fieldname": "total_material_cost",
+   "fieldtype": "Currency",
+   "label": "Total Material Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_labor_cost",
+   "fieldtype": "Currency",
+   "label": "Total Labor Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_overhead_cost",
+   "fieldtype": "Currency",
+   "label": "Total Overhead Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pricing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "estimated_total_cost",
+   "fieldtype": "Currency",
+   "label": "Total Cost",
+   "read_only": 1
+  },
+  {
+   "fieldname": "estimated_selling_price",
+   "fieldtype": "Currency",
+   "label": "Total Selling Price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_profit_amount",
+   "fieldtype": "Currency",
+   "label": "Total Profit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "overall_profit_margin",
+   "fieldtype": "Percent",
+   "label": "Overall Profit Margin %",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Order Workflow",
+ "name": "Pre-Quotation",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Sales User",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "title_field": "customer"
+}
+
