@@ -34,7 +34,7 @@ frappe.ui.form.on('Pre-Quotation', {
 		}
 		
 		// Set status to Submitted
-		frm.set_value('status', 'Submitted');
+		frm.set_value("status", "Submitted to Manufacturing");
 	}
 });
 
@@ -43,7 +43,7 @@ frappe.ui.form.on('Pre-Quotation Item', {
 		calculate_item_totals(frm, cdt, cdn);
 	},
 	
-	selling_price_per_unit: function(frm, cdt, cdn) {
+	selling_price: function(frm, cdt, cdn) {
 		calculate_item_totals(frm, cdt, cdn);
 	},
 	
@@ -279,9 +279,9 @@ function add_item_to_quotation(frm, data, categoryId, subcategoryId, itemId) {
 				// Add item to child table
 				let child = frm.add_child('custom_furniture_items');
 				child.item_name = item.name;
-				child.item_description = item.description;
+				child.description = item.description;
 				child.quantity = quantity;
-				child.unit = item.unit;
+				child.uom = item.unit;
 				child.specifications = JSON.stringify(specifications);
 				child.material_cost = r.message.final_cost;
 				child.selling_price_per_unit = r.message.final_price;

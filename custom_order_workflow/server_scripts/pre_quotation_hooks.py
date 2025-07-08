@@ -16,19 +16,14 @@ def validate_pre_quotation_submission(doc, method):
             if not item.description:
                 frappe.throw(_("Please provide description for item: {0}").format(item.item_name))
             
-            if item.item_type == "Table" and not item.specifications_table:
-                frappe.throw(_("Please provide table specifications for: {0}").format(item.item_name))
-            
-            if item.item_type == "Chair" and not item.specifications_chair:
-                frappe.throw(_("Please provide chair specifications for: {0}").format(item.item_name))
+            # No specific item type or specification table/chair checks needed as specifications are generic
 
 def validate_manufacturing_costing(doc, method):
     """Validate manufacturing costing completion"""
     if doc.status == "Costing Done":
         # Ensure all items have estimated costs
         for item in doc.custom_furniture_items:
-            if not item.estimated_unit_cost or item.estimated_unit_cost <= 0:
-                frappe.throw(_("Please provide estimated unit cost for item: {0}").format(item.item_name))
+            if not item.total_cost or item.total_cost <= 0:                frappe.throw(_("Please provide estimated unit cost for item: {0}").format(item.item_name))
         
         if not doc.estimated_total_cost or doc.estimated_total_cost <= 0:
             frappe.throw(_("Total estimated cost must be greater than zero"))

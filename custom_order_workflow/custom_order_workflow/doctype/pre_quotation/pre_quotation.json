@@ -20,6 +20,7 @@
   "notes",
   "visual_selector_section",
   "visual_selector_html",
+  "visual_items_data",
   "section_break_11",
   "custom_furniture_items",
   "section_break_13",
@@ -83,7 +84,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Draft\nSubmitted\nApproved\nRejected\nCancelled",
+   "options": "Draft\nSubmitted to Manufacturing\nCosting Done\nApproved Internally\nConverted to Quotation\nRejected\nCancelled",
    "reqd": 1
   },
   {
@@ -215,3 +216,10 @@
  "title_field": "customer"
 }
 
+
+  {
+   "fieldname": "visual_items_data",
+   "fieldtype": "Long Text",
+   "label": "Visual Items Data",
+   "hidden": 1
+  },

@@ -37,6 +37,12 @@
        "doc_status": 2,
        "allow_edit": "Sales Manager",
        "is_optional_state": 0
+      },
+      {
+       "state": "Converted to Quotation",
+       "doc_status": 1,
+       "allow_edit": "Sales Manager",
+       "is_optional_state": 0
       }
      ],
      "transitions": [
@@ -80,7 +86,20 @@
        "allow_self_approval": 0,
        "condition": ""
       }
-     ]
-    }
-   ]
-   
+      {
+       "state": "Approved Internally",
+       "action": "Convert to Quotation",
+       "next_state": "Converted to Quotation",
+       "allowed": "Sales Manager",
+       "allow_self_approval": 0,
+       "condition": ""
+      },
+      {
+       "state": "Approved Internally",
+       "action": "Reject",
+       "next_state": "Rejected",
+       "allowed": "Sales Manager",
+       "allow_self_approval": 0,
+       "condition": ""
+      }
+

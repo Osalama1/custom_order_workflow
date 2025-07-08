@@ -192,10 +192,10 @@ def create_quotation_from_pre_quotation(pre_quotation_name):
             quotation_item = quotation.append('items')
             quotation_item.item_code = item_code
             quotation_item.item_name = item.item_name
-            quotation_item.description = item.item_description
+            quotation_item.description = item.description
             quotation_item.qty = item.quantity
-            quotation_item.uom = item.unit
-            quotation_item.rate = item.selling_price_per_unit
+            quotation_item.uom = item.uom
+            quotation_item.rate = item.selling_price
             quotation_item.amount = item.total_selling_amount
         
         quotation.insert()
@@ -231,9 +231,9 @@ def create_item_from_pre_quotation_item(pre_quotation_item):
         item = frappe.new_doc('Item')
         item.item_code = item_code
         item.item_name = pre_quotation_item.item_name
-        item.description = pre_quotation_item.item_description
+        item.description = pre_quotation_item.description
         item.item_group = 'Custom Furniture'  # Create this item group if needed
-        item.stock_uom = pre_quotation_item.unit
+        item.stock_uom = pre_quotation_item.uom
         item.is_stock_item = 1
         item.include_item_in_manufacturing = 1
         item.valuation_rate = pre_quotation_item.material_cost or 0
