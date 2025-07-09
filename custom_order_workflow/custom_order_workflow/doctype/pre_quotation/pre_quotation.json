@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2024-01-01 00:00:00.000000",
+ "creation": "2024-01-01 00:00:00",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -31,12 +31,14 @@
   "estimated_total_cost",
   "estimated_selling_price",
   "total_profit_amount",
-  "overall_profit_margin"
+  "overall_profit_margin",
+  "amended_from"
  ],
  "fields": [
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Series",
    "options": "PRE-QTN-.YYYY.-",
    "reqd": 1
@@ -71,6 +73,7 @@
    "default": "Today",
    "fieldname": "pre_quotation_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Pre-Quotation Date",
    "reqd": 1
   },
@@ -80,9 +83,11 @@
    "label": "Valid Until"
   },
   {
+   "allow_on_submit": 1,
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Status",
    "options": "Draft\nSubmitted to Manufacturing\nCosting Done\nApproved Internally\nConverted to Quotation\nRejected\nCancelled",
    "reqd": 1
@@ -106,7 +111,13 @@
    "fieldname": "visual_selector_html",
    "fieldtype": "HTML",
    "label": "Visual Selector",
-   "options": "<div id='visual-selector-container'></div>"
+   "options": "<div id=\"visual-selector-container\"></div>"
+  },
+  {
+   "fieldname": "visual_items_data",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "label": "Visual Items Data"
   },
   {
    "fieldname": "section_break_11",
@@ -165,16 +176,27 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "overall_profit_margin",
    "fieldtype": "Percent",
    "label": "Overall Profit Margin %",
    "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pre-Quotation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-01 00:00:00.000000",
+ "modified": "2025-07-09 01:33:02.853536",
  "modified_by": "Administrator",
  "module": "Custom Order Workflow",
  "name": "Pre-Quotation",
@@ -212,14 +234,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "title_field": "customer"
+ "title_field": "customer",
+ "track_changes": 1
 }
-
-
-  {
-   "fieldname": "visual_items_data",
-   "fieldtype": "Long Text",
-   "label": "Visual Items Data",
-   "hidden": 1
-  },

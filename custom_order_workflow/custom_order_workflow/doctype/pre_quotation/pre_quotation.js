@@ -9,7 +9,7 @@ frappe.ui.form.on('Pre-Quotation', {
 		}
 		
 		// Add custom buttons
-		if (frm.doc.docstatus === 1 && frm.doc.status === 'Submitted') {
+		if (frm.doc.docstatus === 1 && frm.doc.status === 'Converted to Quotation') {
 			frm.add_custom_button(__('Create Quotation'), function() {
 				create_quotation_from_pre_quotation(frm);
 			});

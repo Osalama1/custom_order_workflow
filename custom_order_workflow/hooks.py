@@ -203,3 +203,37 @@ app_license = "MIT"
 # auth_hooks = [
 #	"custom_order_workflow.auth.validate"
 # ]
+fixtures = [
+    {
+        "doctype": "Workflow",
+        "filters": {
+            "name": ["in", ["Pre-Quotation Workflow"]]
+        }
+    },
+    {
+        "doctype": "Workflow State",
+        "filters": {
+            "name": ["in", [
+                "Draft",
+                "Submitted to Manufacturing",
+                "Costing Done",
+                "Approved Internally",
+                "Converted to Quotation",
+                "Rejected"
+            ]]
+        }
+    },
+    {
+        "doctype": "Workflow Action Master",
+        "filters": {
+            "name": ["in", [
+                "Submit to Manufacturing",
+                "Complete Costing",
+                "Reject",
+                "Approve Internally",
+                "Convert to Quotation"
+            ]]
+        }
+    }
+]
+
