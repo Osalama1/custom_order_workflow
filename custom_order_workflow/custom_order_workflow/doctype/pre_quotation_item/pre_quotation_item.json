@@ -2,30 +2,9 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2024-01-01 00:00:00.000000",
- "doctype": "DocTyp"field_order": [
-  "item_name",
-  "description",
-  "quantity",
-  "attached_image",
-  "uom",
-  "section_break_6",
-  "specifications",
-  "notes",
-  "section_break_9",
-  "material_cost",
-  "labor_cost",
-  "overhead_cost",
-  "column_break_13",
-  "total_cost",
-  "profit_margin_percent",
-  "selling_price",
-  "column_break_17",
-  "total_selling_amount",
-  "profit_amount",
-  "section_break_20",
-  "manufacturing_notes",
-  "sales_notes"
- ],
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "item_name",
@@ -53,38 +32,6 @@
    "fieldtype": "Attach Image",
    "label": "Attached Image",
    "in_list_view": 1
-  },Image",
-   "label": "Attached Image",
-   "in_list_view": 1
-  },,
-  {
-   "fieldname": "attached_image",
-   "fieldtype": "Attach Image",
-   "label": "Attached Image",
-   "in_list_view": 1
-  },,
-   "precision": 2
-  },
-  {
-   "fieldname": "attached_image",
-   "fieldtype": "Attach Image",
-   "label": "Attached Image",
-   "in_list_view": 1
-  },
-   "precision": 2
-  },
-  {
-   "fieldname": "attached_image",
-   "fieldtype": "Attach Image",
-   "label": "Attached Image",
-   "in_list_view": 1
-  },sion": 2
-  },
-  {
-   "fieldname": "attached_image",
-   "fieldtype": "Attach Image",
-   "label": "Attached Image",
-   "in_list_view": 1
   },
   {
    "fieldname": "uom",
@@ -95,22 +42,6 @@
   },
   {
    "fieldname": "section_break_6",
-   "fieldtype": "Section Break",
-   "label": "Specifications"
-  },
-  {
-   "fieldname": "specifications",
-   "fieldtype": "Long Text",
-   "label": "Specifications (JSON)",
-   "description": "Technical specifications in JSON format"
-  },
-  {
-   "fieldname": "notes",
-   "fieldtype": "Text",
-   "label": "Notes"
-  },
-  {
-   "fieldname": "section_break_9",
    "fieldtype": "Section Break",
    "label": "Cost Breakdown"
   },
@@ -150,7 +81,7 @@
    "precision": 2
   },
   {
-   "fieldname": "selling_price",
+   "fieldname": "selling_price_per_unit",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Selling Price (per unit)",
@@ -205,4 +136,5 @@
  "states": [],
  "track_changes": 1
 }
+
 
