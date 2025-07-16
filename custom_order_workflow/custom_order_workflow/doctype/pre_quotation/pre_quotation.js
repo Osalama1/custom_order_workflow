@@ -7,121 +7,86 @@ frappe.ui.form.on("Pre-Quotation", {
 		calculate_totals(frm);
 
 		// Dynamic field visibility and editability based on status
-		if (frm.doc.docstatus === 0) { // Draft
+		const is_draft = frm.doc.docstatus === 0;
+		const is_submitted_to_manufacturing = frm.doc.docstatus === 1 && frm.doc.status === "Submitted to Manufacturing";
+		const is_sales_manager_view = frm.doc.docstatus === 1 && (frm.doc.status === "Costing Done" || frm.doc.status === "Approved Internally");
+		const is_converted_to_quotation = frm.doc.docstatus === 1 && frm.doc.status === "Converted to Quotation";
+
+		// Default states for all fields
+		const fields_to_manage = [
+			"item_name", "description", "quantity", "attached_image",
+			"material_cost", "labor_cost", "overhead_cost", "total_cost",
+			"profit_margin_percent", "selling_price_per_unit", "total_selling_amount", "profit_amount"
+		];
+
+		const main_fields_to_manage = [
+			"estimated_total_cost", "estimated_selling_price", "total_profit_amount", "overall_profit_margin", "vat_rate"
+		];
+
+		// Set all fields to hidden and read-only by default
+		fields_to_manage.forEach(field => {
+			frm.set_df_property(field, "hidden", 1, "custom_furniture_items");
+			frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
+		});
+		main_fields_to_manage.forEach(field => {
+			frm.set_df_property(field, "hidden", 1);
+			frm.set_df_property(field, "read_only", 1);
+		});
+		frm.set_df_property("custom_furniture_items", "read_only", 1);
+
+		if (is_draft) {
 			// Fields for initial creation
 			frm.set_df_property("custom_furniture_items", "read_only", 0);
-			frm.set_df_property("custom_furniture_items", "hidden", 0);
-			
-			// Show Item/Description, Quantity, Attached Image in grid
+			fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
+			});
 			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-			
-			// Hide cost and pricing fields
-			frm.set_df_property("material_cost", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("labor_cost", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("overhead_cost", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("total_cost", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("profit_margin_percent", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("selling_price", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("total_selling_amount", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("profit_amount", "hidden", 1, "custom_furniture_items");
-			
-			frm.set_df_property("estimated_total_cost", "hidden", 1);
-			frm.set_df_property("estimated_selling_price", "hidden", 1);
-			frm.set_df_property("total_profit_amount", "hidden", 1);
-			frm.set_df_property("overall_profit_margin", "hidden", 1);
-			frm.set_df_property("vat_rate", "hidden", 1);
 
-		} else if (frm.doc.docstatus === 1 && frm.doc.status === "Submitted to Manufacturing") { // Submitted to Manufacturing
-			// Make custom_furniture_items read-only
-			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			
+		} else if (is_submitted_to_manufacturing) {
 			// Show only cost fields in the grid
 			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
 			
-			frm.set_df_property("material_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("labor_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("overhead_cost", "hidden", 0, "custom_furniture_items");
+			// Hide individual cost fields and show only total_cost
+			frm.set_df_property("material_cost", "hidden", 1, "custom_furniture_items");
+			frm.set_df_property("labor_cost", "hidden", 1, "custom_furniture_items");
+			frm.set_df_property("overhead_cost", "hidden", 1, "custom_furniture_items");
 			frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
 			
-			// Hide pricing fields
-			frm.set_df_property("profit_margin_percent", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("selling_price", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("total_selling_amount", "hidden", 1, "custom_furniture_items");
-			frm.set_df_property("profit_amount", "hidden", 1, "custom_furniture_items");
+			// Make total_cost editable in this state
+			frm.set_df_property("total_cost", "read_only", 0, "custom_furniture_items");
 			
 			frm.set_df_property("estimated_total_cost", "hidden", 0);
-			frm.set_df_property("estimated_selling_price", "hidden", 1);
-			frm.set_df_property("total_profit_amount", "hidden", 1);
-			frm.set_df_property("overall_profit_margin", "hidden", 1);
-			frm.set_df_property("vat_rate", "hidden", 1);
 
-		} else if (frm.doc.docstatus === 1 && (frm.doc.status === "Costing Done" || frm.doc.status === "Approved Internally")) { // Sales Managers
+		} else if (is_sales_manager_view) {
 			// Make custom_furniture_items editable for sales managers
 			frm.set_df_property("custom_furniture_items", "read_only", 0);
-			
-			// Show cost and pricing fields
-			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-			
-			frm.set_df_property("material_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("labor_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("overhead_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
-			
-			frm.set_df_property("profit_margin_percent", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("selling_price", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("total_selling_amount", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("profit_amount", "hidden", 0, "custom_furniture_items");
-			
+			fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
+				frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
+			});
+			main_fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "hidden", 0);
+				frm.set_df_property(field, "read_only", 0);
+			});
 			// Make profit_margin_percent editable
 			frm.set_df_property("profit_margin_percent", "read_only", 0, "custom_furniture_items");
-			
-			frm.set_df_property("estimated_total_cost", "hidden", 0);
-			frm.set_df_property("estimated_selling_price", "hidden", 0);
-			frm.set_df_property("total_profit_amount", "hidden", 0);
-			frm.set_df_property("overall_profit_margin", "hidden", 0);
-			frm.set_df_property("vat_rate", "hidden", 0);
 
-		} else if (frm.doc.docstatus === 1 && frm.doc.status === "Converted to Quotation") { // Converted to Quotation
-			// Make all fields read-only
-			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			
-			// Show all relevant fields
-			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("material_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("labor_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("overhead_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("profit_margin_percent", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("selling_price", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("total_selling_amount", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("profit_amount", "hidden", 0, "custom_furniture_items");
-			
-			frm.set_df_property("estimated_total_cost", "hidden", 0);
-			frm.set_df_property("estimated_selling_price", "hidden", 0);
-			frm.set_df_property("total_profit_amount", "hidden", 0);
-			frm.set_df_property("overall_profit_margin", "hidden", 0);
-			frm.set_df_property("vat_rate", "hidden", 0);
-
-		} else { // Default for other statuses or docstatus
-			// Hide all custom fields by default
-			frm.set_df_property("custom_furniture_items", "hidden", 1);
-			frm.set_df_property("estimated_total_cost", "hidden", 1);
-			frm.set_df_property("estimated_selling_price", "hidden", 1);
-			frm.set_df_property("total_profit_amount", "hidden", 1);
-			frm.set_df_property("overall_profit_margin", "hidden", 1);
-			frm.set_df_property("vat_rate", "hidden", 1);
+		} else if (is_converted_to_quotation) {
+			// Make all fields read-only and visible
+			fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
+				frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
+			});
+			main_fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "hidden", 0);
+				frm.set_df_property(field, "read_only", 1);
+			});
 		}
 	},
 	
@@ -129,18 +94,18 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Set default valid until date (30 days from today)
 		if (!frm.doc.valid_until && frm.doc.pre_quotation_date) {
 			let valid_date = frappe.datetime.add_days(frm.doc.pre_quotation_date, 30);
-			frm.set_value('valid_until', valid_date);
+			frm.set_value("valid_until", valid_date);
 		}
 	},
 	
 	before_submit: function(frm) {
 		// Validate that items exist
 		if (!frm.doc.custom_furniture_items || frm.doc.custom_furniture_items.length === 0) {
-			frappe.throw(__('Please add at least one item before submitting'));
+			frappe.throw(__("Please add at least one item before submitting"));
 		}
 		
 		// Set status to Submitted
-		frm.set_value('status', 'Submitted');
+		frm.set_value("status", "Submitted");
 	}
 });
 
@@ -193,7 +158,7 @@ function calculate_item_totals(frm, cdt, cdn) {
 		row.profit_margin = (row.profit_amount / (row.total_cost * (row.quantity || 0))) * 100;
 	}
 	
-	frm.refresh_field('custom_furniture_items');
+	frm.refresh_field("custom_furniture_items");
 	calculate_totals(frm);
 }
 
@@ -231,15 +196,16 @@ function calculate_totals(frm) {
 
 function create_quotation_from_pre_quotation(frm) {
 	frappe.call({
-		method: 'custom_order_workflow.api.create_quotation_from_pre_quotation',
+		method: "custom_order_workflow.api.create_quotation_from_pre_quotation",
 		args: {
 			pre_quotation_name: frm.doc.name
 		},
 		callback: function(r) {
 			if (r.message) {
-				frappe.set_route('Form', 'Quotation', r.message);
+				frappe.set_route("Form", "Quotation", r.message);
 			}
 		}
 	});
 }
+
 
