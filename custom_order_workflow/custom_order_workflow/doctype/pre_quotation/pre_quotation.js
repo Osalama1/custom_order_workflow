@@ -37,6 +37,7 @@ frappe.ui.form.on("Pre-Quotation", {
 		if (is_draft) {
 			// Fields for initial creation
 			frm.set_df_property("custom_furniture_items", "read_only", 0);
+			frm.set_df_property("custom_furniture_items", "hidden", 0); // Ensure table is visible
 			fields_to_manage.forEach(field => {
 				frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
 			});
