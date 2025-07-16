@@ -18,8 +18,6 @@
   "status",
   "section_break_9",
   "notes",
-  "visual_selector_section",
-  "visual_selector_html",
   "section_break_11",
   "custom_furniture_items",
   "section_break_13",
@@ -96,17 +94,7 @@
    "fieldtype": "Text Editor",
    "label": "Notes"
   },
-  {
-   "fieldname": "visual_selector_section",
-   "fieldtype": "Section Break",
-   "label": "Visual Item Selector"
-  },
-  {
-   "fieldname": "visual_selector_html",
-   "fieldtype": "HTML",
-   "label": "Visual Selector",
-   "options": "<div id='visual-selector-container'></div>"
-  },
+
   {
    "fieldname": "section_break_11",
    "fieldtype": "Section Break",
@@ -164,10 +152,20 @@
    "read_only": 1
   },
   {
-   "fieldname": "overall_profit_margin",
-   "fieldtype": "Percent",
-   "label": "Overall Profit Margin %",
+   "fieldname": "overall_profit_margin"
+  },
+  {
+   "fieldname": "total_vat_amount",
+   "fieldtype": "Currency",
+   "label": "Total VAT Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "vat_rate",
+   "fieldtype": "Percent",
+   "label": "VAT Rate",
+   "default": "15",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,

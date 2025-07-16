@@ -6,8 +6,7 @@ import json
 from frappe import _
 from frappe.utils import flt, cint, nowdate
 
-@frappe.whitelist()
-def get_visual_selector_data():
+
     """
     Get all visual selector data organized hierarchically
     
@@ -94,8 +93,7 @@ def get_visual_selector_data():
         frappe.log_error(f"Get Visual Selector Data Error: {str(e)}")
         return {'error': str(e)}
 
-@frappe.whitelist()
-def calculate_item_price(item_id, specifications, quantity=1):
+
     """
     Calculate final price for an item based on specifications
     

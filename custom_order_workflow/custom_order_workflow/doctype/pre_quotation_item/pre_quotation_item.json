@@ -2,15 +2,11 @@
  "actions": [],
  "allow_rename": 1,
  "creation": "2024-01-01 00:00:00.000000",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "item_code",
+ "doctype": "DocTyp"field_order": [
   "item_name",
   "description",
-  "column_break_3",
   "quantity",
+  "attached_image",
   "uom",
   "section_break_6",
   "specifications",
@@ -32,26 +28,17 @@
  ],
  "fields": [
   {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
-   "label": "Item Code",
-   "read_only": 1
-  },
-  {
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Item Name",
+   "label": "Item/Description",
    "reqd": 1
   },
   {
    "fieldname": "description",
    "fieldtype": "Text",
-   "label": "Description"
-  },
-  {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
+   "label": "Description",
+   "in_list_view": 1
   },
   {
    "fieldname": "quantity",
@@ -60,6 +47,44 @@
    "label": "Quantity",
    "reqd": 1,
    "precision": 2
+  },
+  {
+   "fieldname": "attached_image",
+   "fieldtype": "Attach Image",
+   "label": "Attached Image",
+   "in_list_view": 1
+  },Image",
+   "label": "Attached Image",
+   "in_list_view": 1
+  },,
+  {
+   "fieldname": "attached_image",
+   "fieldtype": "Attach Image",
+   "label": "Attached Image",
+   "in_list_view": 1
+  },,
+   "precision": 2
+  },
+  {
+   "fieldname": "attached_image",
+   "fieldtype": "Attach Image",
+   "label": "Attached Image",
+   "in_list_view": 1
+  },
+   "precision": 2
+  },
+  {
+   "fieldname": "attached_image",
+   "fieldtype": "Attach Image",
+   "label": "Attached Image",
+   "in_list_view": 1
+  },sion": 2
+  },
+  {
+   "fieldname": "attached_image",
+   "fieldtype": "Attach Image",
+   "label": "Attached Image",
+   "in_list_view": 1
   },
   {
    "fieldname": "uom",
