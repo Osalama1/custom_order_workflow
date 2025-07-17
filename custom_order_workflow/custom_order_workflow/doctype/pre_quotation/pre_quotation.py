@@ -220,3 +220,42 @@ class PreQuotation(Document):
 
 
 
+
+
+@frappe.whitelist()
+def create_quotation_from_pre_quotation(docname):
+    pre_quotation = frappe.get_doc("Pre-Quotation", docname)
+
+    if pre_quotation.status != "Converted to Quotation":
+        frappe.throw("Pre-Quotation must be in 'Converted to Quotation' status to create a Quotation.")
+
+    quotation = frappe.new_doc("Quotation")
+    quotation.customer = pre_quotation.customer
+    quotation.lead = pre_quotation.lead
+    quotation.contact_person = pre_quotation.contact_person
+    quotation.contact_email = pre_quotation.contact_email
+    quotation.transaction_date = nowdate()
+    quotation.valid_until = pre_quotation.valid_until
+
+    for item in pre_quotation.custom_furniture_items:
+        quotation.append("items", {
+            "item_code": item.item_name, # Assuming item_name can be used as item_code
+            "item_name": item.item_name,
+            "description": item.description,
+            "qty": item.quantity,
+            "uom": item.uom,
+            "rate": item.selling_price_per_unit,
+            "amount": item.total_selling_amount,
+            "base_rate": item.selling_price_per_unit, # Assuming base_rate is same as rate
+            "base_amount": item.total_selling_amount,
+            "vat_rate": item.vat_rate_item
+        })
+    
+    quotation.set_onload("pre_quotation_id", pre_quotation.name)
+    quotation.insert()
+    
+    pre_quotation.db_set("quotation_created", 1)
+    pre_quotation.db_set("quotation_name", quotation.name)
+    
+    return quotation.name
+

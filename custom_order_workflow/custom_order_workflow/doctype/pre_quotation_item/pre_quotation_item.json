@@ -9,15 +9,14 @@
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item/Description",
-   "reqd": 1
+    "in_list_view": 1,
+   "label": "Item/Description"
   },
   {
    "fieldname": "description",
    "fieldtype": "Text",
    "label": "Description",
-   "in_list_view": 1
+   "in_list_view": 0
   },
   {
    "fieldname": "quantity",

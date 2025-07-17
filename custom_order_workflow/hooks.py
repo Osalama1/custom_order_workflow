@@ -238,3 +238,10 @@ fixtures = [
         }
     }
 ]
+
+
+doctype_js = {
+    "Lead": "public/js/lead.js",
+    "Customer": "public/js/customer.js"
+}
+
