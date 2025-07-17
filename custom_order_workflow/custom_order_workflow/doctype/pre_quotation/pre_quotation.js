@@ -9,8 +9,14 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Dynamic field visibility and editability based on status
 		const is_draft = frm.doc.docstatus === 0;
 		const is_submitted_to_manufacturing = frm.doc.docstatus === 1 && frm.doc.status === "Submitted to Manufacturing";
-		const is_sales_manager_view = frm.doc.docstatus === 1 && (frm.doc.status === "Costing Done" || frm.doc.status === "Approved Internally");
+		const is_costing_done = frm.doc.docstatus === 1 && frm.doc.status === "Costing Done";
+		const is_approved_internally = frm.doc.docstatus === 1 && frm.doc.status === "Approved Internally";
 		const is_converted_to_quotation = frm.doc.docstatus === 1 && frm.doc.status === "Converted to Quotation";
+
+		// Check user roles
+		const is_sales_user = frappe.user.has_role("Sales User");
+		const is_manufacturing_user = frappe.user.has_role("Manufacturing User");
+		const is_sales_manager = frappe.user.has_role("Sales Manager");
 
 		// Define all fields to manage within the child table
 		const item_fields_to_manage = [
@@ -24,76 +30,90 @@ frappe.ui.form.on("Pre-Quotation", {
 			"estimated_total_cost", "estimated_selling_price", "total_profit_amount", "overall_profit_margin", "vat_rate"
 		];
 
-		// Always ensure the main table is visible and editable by default
-		frm.set_df_property("custom_furniture_items", "hidden", 0);
-		frm.set_df_property("custom_furniture_items", "read_only", 0);
-
-		// Set all item fields to hidden and read-only by default, then override based on state
+		// Reset all fields to hidden and read-only by default, then apply specific rules
 		item_fields_to_manage.forEach(field => {
 			frm.set_df_property(field, "hidden", 1, "custom_furniture_items");
 			frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
 		});
-
-		// Set all main fields to hidden and read-only by default, then override based on state
 		main_fields_to_manage.forEach(field => {
 			frm.set_df_property(field, "hidden", 1);
 			frm.set_df_property(field, "read_only", 1);
 		});
 
+		// Always ensure the main table is visible
+		frm.set_df_property("custom_furniture_items", "hidden", 0);
+
 		if (is_draft) {
-			// In Draft state, only Item/Description, Quantity, and Attached Image are visible and editable
-			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("item_name", "read_only", 0, "custom_furniture_items");
-			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("description", "read_only", 0, "custom_furniture_items");
-			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("quantity", "read_only", 0, "custom_furniture_items");
-			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
-			
-			// VAT rate should be visible and editable in draft
-			frm.set_df_property("vat_rate", "hidden", 0);
-			frm.set_df_property("vat_rate", "read_only", 0);
+			// Sales User in Draft state: only basic item details are visible and editable
+			if (is_sales_user) {
+				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+				frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("item_name", "read_only", 0, "custom_furniture_items");
+				frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("description", "read_only", 0, "custom_furniture_items");
+				frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("quantity", "read_only", 0, "custom_furniture_items");
+				frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
+				
+				// VAT rate should be visible and editable in draft for sales user
+				frm.set_df_property("vat_rate", "hidden", 0);
+				frm.set_df_property("vat_rate", "read_only", 0);
+			}
+			// For other roles in draft, table might be read-only or hidden based on their permissions
+			// (handled by permlevels in DocType JSON if not explicitly set here)
 
 		} else if (is_submitted_to_manufacturing) {
-			// Make custom_furniture_items read-only
+			// Manufacturing User in Submitted to Manufacturing state: can edit cost_per_unit
+			if (is_manufacturing_user) {
+				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+				// Show basic item details (read-only)
+				frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+				
+				// Show and make cost_per_unit editable
+				frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
+				frm.set_df_property("cost_per_unit", "read_only", 0, "custom_furniture_items");
+				
+				// Show total_cost (read-only)
+				frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
+				
+				// Show estimated_total_cost in main form (read-only)
+				frm.set_df_property("estimated_total_cost", "hidden", 0);
+			}
+			// For other roles, table and fields are read-only or hidden based on permlevels
 			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			
-			// Show Item/Description, Quantity, Attached Image, Cost per Unit, and Total Cost in grid
-			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
-			frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
-			
-			// Make cost_per_unit editable in this state
-			frm.set_df_property("cost_per_unit", "read_only", 0, "custom_furniture_items");
-			
-			// Show estimated_total_cost in main form
-			frm.set_df_property("estimated_total_cost", "hidden", 0);
-
-		} else if (is_sales_manager_view) {
-			// Make custom_furniture_items editable for sales managers
-			frm.set_df_property("custom_furniture_items", "read_only", 0);
-			
-			// Show all item fields and make them editable
-			item_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
-				frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
-			});
-			
-			// Make profit_margin_percent editable specifically
-			frm.set_df_property("profit_margin_percent", "read_only", 0, "custom_furniture_items");
-			
-			// Show all main fields and make them editable
 			main_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 0);
-				frm.set_df_property(field, "read_only", 0);
+				frm.set_df_property(field, "read_only", 1);
+			});
+
+		} else if (is_costing_done || is_approved_internally) {
+			// Sales Manager view: all fields visible, sales-related fields editable
+			if (is_sales_manager) {
+				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+				item_fields_to_manage.forEach(field => {
+					frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
+					frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
+				});
+				// Make profit_margin_percent and selling_price_per_unit editable specifically
+				frm.set_df_property("profit_margin_percent", "read_only", 0, "custom_furniture_items");
+				frm.set_df_property("selling_price_per_unit", "read_only", 0, "custom_furniture_items");
+				
+				main_fields_to_manage.forEach(field => {
+					frm.set_df_property(field, "hidden", 0);
+					frm.set_df_property(field, "read_only", 0);
+				});
+			}
+			// For other roles, table and fields are read-only or hidden based on permlevels
+			frm.set_df_property("custom_furniture_items", "read_only", 1);
+			main_fields_to_manage.forEach(field => {
+				frm.set_df_property(field, "read_only", 1);
 			});
 
 		} else if (is_converted_to_quotation) {
-			// Make all fields read-only and visible
+			// All fields read-only and visible
 			frm.set_df_property("custom_furniture_items", "read_only", 1);
 			item_fields_to_manage.forEach(field => {
 				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
