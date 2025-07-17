@@ -178,7 +178,8 @@
    "report": 1,
    "role": "Sales Manager",
    "submit": 1,
-   "write": 1
+   "write": 1,
+   "permlevel": 1
   },
   {
    "create": 1,

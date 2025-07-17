@@ -43,25 +43,14 @@
   {
    "fieldname": "section_break_6",
    "fieldtype": "Section Break",
-   "label": "Cost Breakdown"
+   "label": "Costing"
   },
   {
-   "fieldname": "material_cost",
+   "fieldname": "cost_per_unit",
    "fieldtype": "Currency",
-   "label": "Material Cost (per unit)",
-   "precision": 2
-  },
-  {
-   "fieldname": "labor_cost",
-   "fieldtype": "Currency",
-   "label": "Labor Cost (per unit)",
-   "precision": 2
-  },
-  {
-   "fieldname": "overhead_cost",
-   "fieldtype": "Currency",
-   "label": "Overhead Cost (per unit)",
-   "precision": 2
+   "label": "Cost per Unit",
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "column_break_13",
@@ -70,22 +59,25 @@
   {
    "fieldname": "total_cost",
    "fieldtype": "Currency",
-   "label": "Total Cost (per unit)",
+   "label": "Total Cost",
    "read_only": 1,
-   "precision": 2
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "profit_margin_percent",
    "fieldtype": "Percent",
    "label": "Profit Margin %",
-   "precision": 2
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "selling_price_per_unit",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Selling Price (per unit)",
-   "precision": 2
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "column_break_17",
@@ -97,14 +89,16 @@
    "in_list_view": 1,
    "label": "Total Selling Amount",
    "read_only": 1,
-   "precision": 2
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "profit_amount",
    "fieldtype": "Currency",
    "label": "Profit Amount",
    "read_only": 1,
-   "precision": 2
+   "precision": 2,
+   "permlevel": 1
   },
   {
    "fieldname": "section_break_20",

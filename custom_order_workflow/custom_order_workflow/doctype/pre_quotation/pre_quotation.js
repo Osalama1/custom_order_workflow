@@ -15,7 +15,7 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Define all fields to manage within the child table
 		const item_fields_to_manage = [
 			"item_name", "description", "quantity", "attached_image",
-			"material_cost", "labor_cost", "overhead_cost", "total_cost",
+			"cost_per_unit", "total_cost",
 			"profit_margin_percent", "selling_price_per_unit", "total_selling_amount", "profit_amount"
 		];
 
@@ -59,15 +59,16 @@ frappe.ui.form.on("Pre-Quotation", {
 			// Make custom_furniture_items read-only
 			frm.set_df_property("custom_furniture_items", "read_only", 1);
 			
-			// Show Item/Description, Quantity, Attached Image, and Total Cost in grid
+			// Show Item/Description, Quantity, Attached Image, Cost per Unit, and Total Cost in grid
 			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+			frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
 			frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
 			
-			// Make total_cost editable in this state
-			frm.set_df_property("total_cost", "read_only", 0, "custom_furniture_items");
+			// Make cost_per_unit editable in this state
+			frm.set_df_property("cost_per_unit", "read_only", 0, "custom_furniture_items");
 			
 			// Show estimated_total_cost in main form
 			frm.set_df_property("estimated_total_cost", "hidden", 0);
@@ -133,15 +134,7 @@ frappe.ui.form.on("Pre-Quotation Item", {
 		calculate_item_totals(frm, cdt, cdn);
 	},
 	
-	material_cost: function(frm, cdt, cdn) {
-		calculate_item_totals(frm, cdt, cdn);
-	},
-	
-	labor_cost: function(frm, cdt, cdn) {
-		calculate_item_totals(frm, cdt, cdn);
-	},
-	
-	overhead_cost: function(frm, cdt, cdn) {
+	cost_per_unit: function(frm, cdt, cdn) {
 		calculate_item_totals(frm, cdt, cdn);
 	},
 	
@@ -160,7 +153,7 @@ function calculate_item_totals(frm, cdt, cdn) {
 	let row = locals[cdt][cdn];
 	
 	// Calculate total cost
-	row.total_cost = (row.material_cost || 0) + (row.labor_cost || 0) + (row.overhead_cost || 0);
+	row.total_cost = (row.cost_per_unit || 0);
 	
 	// Calculate total selling amount
 	row.total_selling_amount = (row.selling_price_per_unit || 0) * (row.quantity || 0);
