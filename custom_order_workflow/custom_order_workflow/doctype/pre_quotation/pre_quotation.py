@@ -11,6 +11,8 @@ class PreQuotation(Document):
     def validate(self):
         self.calculate_totals()
         self.validate_items()
+        self.validate_customer_or_lead()
+        self.fetch_contact_details()
     
     def before_save(self):
         """Calculate totals before saving"""
@@ -22,6 +24,7 @@ class PreQuotation(Document):
         total_cost = 0
         total_selling_price = 0
         total_profit = 0
+        total_vat = 0
         
         for item in self.custom_furniture_items:
             # Ensure item calculations are up to date
@@ -34,16 +37,18 @@ class PreQuotation(Document):
             total_cost += flt(item.total_cost, 2) * quantity
             total_selling_price += flt(item.total_selling_amount, 2)
             total_profit += flt(item.profit_amount, 2)
+            total_vat += (flt(item.total_selling_amount, 2) - (flt(item.selling_price_per_unit, 2) * quantity))
+
         
         # Update totals
         self.estimated_total_cost = flt(total_cost, 2)
         self.estimated_selling_price = flt(total_selling_price, 2)
-        self.total_profit_amount = flt(total_profit, 2)
+        self.total_vat_amount = flt(total_vat, 2)
         
         # Calculate overall profit margin
         if self.estimated_total_cost > 0:
             self.overall_profit_margin = flt(
-                (self.total_profit_amount / self.estimated_total_cost) * 100, 2
+                (total_profit / self.estimated_total_cost) * 100, 2
             )
         else:
             self.overall_profit_margin = 0
@@ -60,7 +65,23 @@ class PreQuotation(Document):
             
             if not item.quantity or item.quantity <= 0:
                 frappe.throw("Quantity must be greater than 0 for all items")
-    
+
+    def validate_customer_or_lead(self):
+        """Ensure either a customer or a lead is selected"""
+        if not self.customer and not self.lead:
+            frappe.throw("Please select either a Customer or a Lead.")
+
+    def fetch_contact_details(self):
+        """Fetch contact person and email from selected customer or lead"""
+        if self.customer:
+            customer = frappe.get_doc("Customer", self.customer)
+            self.contact_person = customer.customer_primary_contact
+            self.contact_email = customer.email_id
+        elif self.lead:
+            lead = frappe.get_doc("Lead", self.lead)
+            self.contact_person = lead.contact_person
+            self.contact_email = lead.email_id
+
     def apply_bulk_costing(self, material_rate=None, labor_rate=None, overhead_rate=None):
         """Apply bulk costing to all items"""
         
@@ -110,7 +131,6 @@ class PreQuotation(Document):
             },
             "selling_breakdown": {
                 "total_selling_price": flt(self.estimated_selling_price, 2),
-                "total_profit": flt(self.total_profit_amount, 2),
                 "profit_margin_percent": flt(self.overall_profit_margin, 2)
             },
             "items": []
@@ -195,5 +215,8 @@ class PreQuotation(Document):
             })
         
         return preview
+
+
+
 
 
