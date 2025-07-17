@@ -6,12 +6,8 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Calculate totals
 		calculate_totals(frm);
 
-		// Dynamic field visibility and editability based on status
-		const is_draft = frm.doc.docstatus === 0 && frm.doc.status === "Draft";
-		const is_submitted_to_manufacturing = frm.doc.docstatus === 0 && frm.doc.status === "Submitted to Manufacturing";
-		const is_costing_done = frm.doc.docstatus === 0 && frm.doc.status === "Costing Done";
-		const is_approved_internally = frm.doc.docstatus === 0 && frm.doc.status === "Approved Internally";
-		const is_converted_to_quotation = frm.doc.docstatus === 1 && frm.doc.status === "Converted to Quotation";
+		// Get current workflow state
+		const current_status = frm.doc.status;
 
 		// Check user roles
 		const is_sales_user = frappe.user.has_role("Sales User");
@@ -43,86 +39,92 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Always ensure the main table is visible
 		frm.set_df_property("custom_furniture_items", "hidden", 0);
 
-		if (is_draft) {
-			// Sales User in Draft state: only basic item details are visible and editable
-			if (is_sales_user) {
-				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
-				frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("item_name", "read_only", 0, "custom_furniture_items");
-				frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("description", "read_only", 0, "custom_furniture_items");
-				frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("quantity", "read_only", 0, "custom_furniture_items");
-				frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
-				
-				// VAT rate should be visible and editable in draft for sales user
-				frm.set_df_property("vat_rate", "hidden", 0);
-				frm.set_df_property("vat_rate", "read_only", 0);
-			}
-			// For other roles in draft, table might be read-only or hidden based on their permissions
-			// (handled by permlevels in DocType JSON if not explicitly set here)
+		switch (current_status) {
+			case "Draft":
+				// Sales User in Draft state: only basic item details are visible and editable
+				if (is_sales_user) {
+					frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+					frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("item_name", "read_only", 0, "custom_furniture_items");
+					frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("description", "read_only", 0, "custom_furniture_items");
+					frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("quantity", "read_only", 0, "custom_furniture_items");
+					frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
+					
+					// VAT rate should be visible and editable in draft for sales user
+					frm.set_df_property("vat_rate", "hidden", 0);
+					frm.set_df_property("vat_rate", "read_only", 0);
+				}
+				break;
 
-		} else if (is_submitted_to_manufacturing) {
-			// Manufacturing User in Submitted to Manufacturing state: can edit cost_per_unit
-			if (is_manufacturing_user) {
-				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
-				// Show basic item details (read-only)
-				frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
-				
-				// Show and make cost_per_unit editable
-				frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
-				frm.set_df_property("cost_per_unit", "read_only", 0, "custom_furniture_items");
-				
-				// Show total_cost (read-only)
-				frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
-				
-				// Show estimated_total_cost in main form (read-only)
-				frm.set_df_property("estimated_total_cost", "hidden", 0);
-			}
-			// For other roles, table and fields are read-only or hidden based on permlevels
-			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			main_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "read_only", 1);
-			});
+			case "Submitted to Manufacturing":
+				// Manufacturing User in Submitted to Manufacturing state: can edit cost_per_unit
+				if (is_manufacturing_user) {
+					frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+					// Show basic item details (read-only)
+					frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+					
+					// Show and make cost_per_unit editable
+					frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("cost_per_unit", "read_only", 0, "custom_furniture_items");
+					
+					// Show total_cost (read-only)
+					frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
+					
+					// Show estimated_total_cost in main form (read-only)
+					frm.set_df_property("estimated_total_cost", "hidden", 0);
+				}
+				// For other roles, table and fields are read-only or hidden based on permlevels
+				frm.set_df_property("custom_furniture_items", "read_only", 1);
+				main_fields_to_manage.forEach(field => {
+					frm.set_df_property(field, "read_only", 1);
+				});
+				break;
 
-		} else if (is_costing_done || is_approved_internally) {
-			// Sales Manager view: all fields visible, sales-related fields editable
-			if (is_sales_manager) {
-				frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+			case "Costing Done":
+			case "Approved Internally":
+				// Sales Manager view: all fields visible, sales-related fields editable
+				if (is_sales_manager) {
+					frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
+					item_fields_to_manage.forEach(field => {
+						frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
+						frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
+					});
+					// Make profit_margin_percent and selling_price_per_unit editable specifically
+					frm.set_df_property("profit_margin_percent", "read_only", 0, "custom_furniture_items");
+					frm.set_df_property("selling_price_per_unit", "read_only", 0, "custom_furniture_items");
+					
+					main_fields_to_manage.forEach(field => {
+						frm.set_df_property(field, "hidden", 0);
+						frm.set_df_property(field, "read_only", 0);
+					});
+				}
+				// For other roles, table and fields are read-only or hidden based on permlevels
+				frm.set_df_property("custom_furniture_items", "read_only", 1);
+				main_fields_to_manage.forEach(field => {
+					frm.set_df_property(field, "read_only", 1);
+				});
+				break;
+
+			case "Converted to Quotation":
+			case "Rejected":
+			case "Cancelled":
+				// All fields read-only and visible
+				frm.set_df_property("custom_furniture_items", "read_only", 1);
 				item_fields_to_manage.forEach(field => {
 					frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
-					frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
+					frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
 				});
-				// Make profit_margin_percent and selling_price_per_unit editable specifically
-				frm.set_df_property("profit_margin_percent", "read_only", 0, "custom_furniture_items");
-				frm.set_df_property("selling_price_per_unit", "read_only", 0, "custom_furniture_items");
-				
 				main_fields_to_manage.forEach(field => {
 					frm.set_df_property(field, "hidden", 0);
-					frm.set_df_property(field, "read_only", 0);
+					frm.set_df_property(field, "read_only", 1);
 				});
-			}
-			// For other roles, table and fields are read-only or hidden based on permlevels
-			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			main_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "read_only", 1);
-			});
-
-		} else if (is_converted_to_quotation) {
-			// All fields read-only and visible
-			frm.set_df_property("custom_furniture_items", "read_only", 1);
-			item_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
-				frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
-			});
-			main_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 0);
-				frm.set_df_property(field, "read_only", 1);
-			});
+				break;
 		}
 	},
 	
@@ -227,7 +229,5 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
-
-
 
 
