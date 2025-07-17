@@ -8,9 +8,9 @@ frappe.ui.form.on("Pre-Quotation", {
 
 		// Dynamic field visibility and editability based on status
 		const is_draft = frm.doc.docstatus === 0;
-		const is_submitted_to_manufacturing = frm.doc.docstatus === 1 && frm.doc.status === "Submitted to Manufacturing";
-		const is_costing_done = frm.doc.docstatus === 1 && frm.doc.status === "Costing Done";
-		const is_approved_internally = frm.doc.docstatus === 1 && frm.doc.status === "Approved Internally";
+		const is_submitted_to_manufacturing = frm.doc.docstatus === 0 && frm.doc.status === "Submitted to Manufacturing";
+		const is_costing_done = frm.doc.docstatus === 0 && frm.doc.status === "Costing Done";
+		const is_approved_internally = frm.doc.docstatus === 0 && frm.doc.status === "Approved Internally";
 		const is_converted_to_quotation = frm.doc.docstatus === 1 && frm.doc.status === "Converted to Quotation";
 
 		// Check user roles
