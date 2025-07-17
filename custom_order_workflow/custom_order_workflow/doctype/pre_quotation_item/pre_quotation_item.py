@@ -30,9 +30,12 @@ class PreQuotationItem(Document):
         quantity = flt(self.quantity, 2)
         selling_price_per_unit = flt(self.selling_price_per_unit, 2)
         total_cost = flt(self.total_cost, 2)
+        vat_rate_item = flt(self.vat_rate_item, 2)
         
         self.total_selling_amount = quantity * selling_price_per_unit
         self.profit_amount = quantity * (selling_price_per_unit - total_cost)
+        self.total_vat_amount_item = self.total_selling_amount * (vat_rate_item / 100)
+
     
     def before_save(self):
         """Ensure calculations are up to date before saving"""
@@ -48,7 +51,8 @@ class PreQuotationItem(Document):
             "profit_margin_percent": flt(self.profit_margin_percent, 2),
             "profit_amount_per_unit": flt(self.selling_price_per_unit, 2) - flt(self.total_cost, 2),
             "total_selling_amount": flt(self.total_selling_amount, 2),
-            "total_profit_amount": flt(self.profit_amount, 2)
+            "total_profit_amount": flt(self.profit_amount, 2),
+            "total_vat_amount_item": flt(self.total_vat_amount_item, 2)
         }
     
     def apply_standard_costing(self, item_group=None):
@@ -71,6 +75,8 @@ class PreQuotationItem(Document):
             
         except Exception as e:
             frappe.log_error(f"Error applying standard costing: {str(e)}")
+
+
 
 
 

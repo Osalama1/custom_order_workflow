@@ -101,6 +101,13 @@
    "permlevel": 1
   },
   {
+   "fieldname": "vat_rate_item",
+   "fieldtype": "Percent",
+   "label": "VAT Rate (Item)",
+   "default": "15",
+   "precision": 2
+  },
+  {
    "fieldname": "section_break_20",
    "fieldtype": "Section Break",
    "label": "Additional Notes"
@@ -130,5 +137,7 @@
  "states": [],
  "track_changes": 1
 }
+
+
 
 

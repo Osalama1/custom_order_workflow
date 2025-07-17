@@ -18,12 +18,12 @@ frappe.ui.form.on("Pre-Quotation", {
 		const item_fields_to_manage = [
 			"item_name", "description", "quantity", "attached_image",
 			"cost_per_unit", "total_cost",
-			"profit_margin_percent", "selling_price_per_unit", "total_selling_amount", "profit_amount"
+			"profit_margin_percent", "selling_price_per_unit", "total_selling_amount", "profit_amount", "vat_rate_item"
 		];
 
 		// Define main form fields to manage
 		const main_fields_to_manage = [
-			"estimated_total_cost", "estimated_selling_price", "total_profit_amount", "overall_profit_margin", "vat_rate"
+			"estimated_total_cost", "estimated_selling_price", "total_profit_amount", "overall_profit_margin", "vat_rate", "total_vat_amount"
 		];
 
 		// Reset all fields to hidden and read-only by default, then apply specific rules
@@ -53,9 +53,9 @@ frappe.ui.form.on("Pre-Quotation", {
 					frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
 					frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
 					
-					// VAT rate should be visible and editable in draft for sales user
-					frm.set_df_property("vat_rate", "hidden", 0);
-					frm.set_df_property("vat_rate", "read_only", 0);
+					// Hide VAT rate in main form and item table
+					frm.set_df_property("vat_rate", "hidden", 1);
+					frm.set_df_property("vat_rate_item", "hidden", 1, "custom_furniture_items");
 				}
 				break;
 
@@ -85,18 +85,20 @@ frappe.ui.form.on("Pre-Quotation", {
 					frm.set_df_property("estimated_total_cost", "hidden", 0);
 					frm.set_df_property("estimated_total_cost", "read_only", 1);
 
-					// Hide selling-related fields
+					// Hide selling-related fields and VAT rate
 					frm.set_df_property("profit_margin_percent", "hidden", 1, "custom_furniture_items");
 					frm.set_df_property("selling_price_per_unit", "hidden", 1, "custom_furniture_items");
 					frm.set_df_property("total_selling_amount", "hidden", 1, "custom_furniture_items");
 					frm.set_df_property("profit_amount", "hidden", 1, "custom_furniture_items");
+					frm.set_df_property("vat_rate_item", "hidden", 1, "custom_furniture_items");
 					frm.set_df_property("estimated_selling_price", "hidden", 1);
 					frm.set_df_property("total_profit_amount", "hidden", 1);
 					frm.set_df_property("overall_profit_margin", "hidden", 1);
+					frm.set_df_property("vat_rate", "hidden", 1);
+					frm.set_df_property("total_vat_amount", "hidden", 1);
 
 				}
 				// For other roles, table and fields are read-only or hidden based on permlevels
-				// This block was causing the issue for Manufacturing User when not explicitly handled above
 				if (!is_manufacturing_user) {
 					frm.set_df_property("custom_furniture_items", "read_only", 1);
 					main_fields_to_manage.forEach(field => {
@@ -141,10 +143,19 @@ frappe.ui.form.on("Pre-Quotation", {
 					frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
 					frm.set_df_property(field, "read_only", 1, "custom_furniture_items");
 				});
-				main_fields_to_manage.forEach(field => {
-					frm.set_df_property(field, "hidden", 0);
-					frm.set_df_property(field, "read_only", 1);
-				});
+				// Only show Total Cost, Total Selling Price, Total VAT, Profit Margin in main form
+				frm.set_df_property("estimated_total_cost", "hidden", 0);
+				frm.set_df_property("estimated_total_cost", "read_only", 1);
+				frm.set_df_property("estimated_selling_price", "hidden", 0);
+				frm.set_df_property("estimated_selling_price", "read_only", 1);
+				frm.set_df_property("total_vat_amount", "hidden", 0);
+				frm.set_df_property("total_vat_amount", "read_only", 1);
+				frm.set_df_property("overall_profit_margin", "hidden", 0);
+				frm.set_df_property("overall_profit_margin", "read_only", 1);
+				
+				// Hide other main form fields
+				frm.set_df_property("total_profit_amount", "hidden", 1);
+				frm.set_df_property("vat_rate", "hidden", 1);
 				break;
 		}
 	},
@@ -153,7 +164,7 @@ frappe.ui.form.on("Pre-Quotation", {
 		// Set default valid until date (30 days from today)
 		if (!frm.doc.valid_until && frm.doc.pre_quotation_date) {
 			let valid_date = frappe.datetime.add_days(frm.doc.pre_quotation_date, 30);
-			frm.set_value("valid_until", valid_date);
+				frm.set_value("valid_until", valid_date);
 		}
 	},
 	
@@ -189,6 +200,10 @@ frappe.ui.form.on("Pre-Quotation Item", {
 			row.selling_price_per_unit = row.total_cost * profit_multiplier;
 		}
 		calculate_item_totals(frm, cdt, cdn);
+	},
+	
+	vat_rate_item: function(frm, cdt, cdn) {
+		calculate_item_totals(frm, cdt, cdn);
 	}
 });
 
@@ -198,11 +213,18 @@ function calculate_item_totals(frm, cdt, cdn) {
 	// Calculate total cost
 	row.total_cost = (row.cost_per_unit || 0);
 	
-	// Calculate total selling amount
-	row.total_selling_amount = (row.selling_price_per_unit || 0) * (row.quantity || 0);
+	// Calculate total selling amount before item VAT
+	let selling_price_before_vat_item = (row.selling_price_per_unit || 0) * (row.quantity || 0);
+	
+	// Calculate item VAT amount
+	let vat_rate_item = row.vat_rate_item || 0;
+	let item_vat_amount = selling_price_before_vat_item * (vat_rate_item / 100);
+	
+	// Total selling amount including item VAT
+	row.total_selling_amount = selling_price_before_vat_item + item_vat_amount;
 	
 	// Calculate profit
-	row.profit_amount = row.total_selling_amount - (row.total_cost * (row.quantity || 0));
+	row.profit_amount = row.total_selling_amount - (row.total_cost * (row.quantity || 0)) - item_vat_amount; // Subtract item VAT from profit
 	
 	// Calculate profit margin
 	if (row.total_cost > 0) {
@@ -216,18 +238,20 @@ function calculate_item_totals(frm, cdt, cdn) {
 function calculate_totals(frm) {
 	let total_selling_price_before_vat = 0;
 	let estimated_total_cost = 0;
+	let total_vat_amount = 0;
 	
 	frm.doc.custom_furniture_items.forEach(function(item) {
 		estimated_total_cost += (item.total_cost || 0) * (item.quantity || 0);
-		total_selling_price_before_vat += item.total_selling_amount || 0;
+		total_selling_price_before_vat += (item.selling_price_per_unit || 0) * (item.quantity || 0);
+		total_vat_amount += (item.total_selling_amount || 0) - ((item.selling_price_per_unit || 0) * (item.quantity || 0));
 	});
 	
 	let total_profit = total_selling_price_before_vat - estimated_total_cost;
 	let profit_margin = estimated_total_cost > 0 ? (total_profit / estimated_total_cost) * 100 : 0;
 	
-	// Calculate VAT
-	let vat_rate = frm.doc.vat_rate || 0;
-	let total_vat_amount = total_selling_price_before_vat * (vat_rate / 100);
+	// Main form VAT rate is no longer used for calculation, but for display if needed
+	// let vat_rate = frm.doc.vat_rate || 0;
+	// let total_vat_amount = total_selling_price_before_vat * (vat_rate / 100);
 	let total_selling_price_after_vat = total_selling_price_before_vat + total_vat_amount;
 
 	frm.set_value("estimated_total_cost", estimated_total_cost);
@@ -250,6 +274,8 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
+
+
 
 
 
