@@ -65,9 +65,13 @@ frappe.ui.form.on("Pre-Quotation", {
 					frm.set_df_property("custom_furniture_items", "read_only", 0); // Table is editable
 					// Show basic item details (read-only)
 					frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("item_name", "read_only", 1, "custom_furniture_items");
 					frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("description", "read_only", 1, "custom_furniture_items");
 					frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("quantity", "read_only", 1, "custom_furniture_items");
 					frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("attached_image", "read_only", 1, "custom_furniture_items");
 					
 					// Show and make cost_per_unit editable
 					frm.set_df_property("cost_per_unit", "hidden", 0, "custom_furniture_items");
@@ -75,15 +79,30 @@ frappe.ui.form.on("Pre-Quotation", {
 					
 					// Show total_cost (read-only)
 					frm.set_df_property("total_cost", "hidden", 0, "custom_furniture_items");
+					frm.set_df_property("total_cost", "read_only", 1, "custom_furniture_items");
 					
 					// Show estimated_total_cost in main form (read-only)
 					frm.set_df_property("estimated_total_cost", "hidden", 0);
+					frm.set_df_property("estimated_total_cost", "read_only", 1);
+
+					// Hide selling-related fields
+					frm.set_df_property("profit_margin_percent", "hidden", 1, "custom_furniture_items");
+					frm.set_df_property("selling_price_per_unit", "hidden", 1, "custom_furniture_items");
+					frm.set_df_property("total_selling_amount", "hidden", 1, "custom_furniture_items");
+					frm.set_df_property("profit_amount", "hidden", 1, "custom_furniture_items");
+					frm.set_df_property("estimated_selling_price", "hidden", 1);
+					frm.set_df_property("total_profit_amount", "hidden", 1);
+					frm.set_df_property("overall_profit_margin", "hidden", 1);
+
 				}
 				// For other roles, table and fields are read-only or hidden based on permlevels
-				frm.set_df_property("custom_furniture_items", "read_only", 1);
-				main_fields_to_manage.forEach(field => {
-					frm.set_df_property(field, "read_only", 1);
-				});
+				// This block was causing the issue for Manufacturing User when not explicitly handled above
+				if (!is_manufacturing_user) {
+					frm.set_df_property("custom_furniture_items", "read_only", 1);
+					main_fields_to_manage.forEach(field => {
+						frm.set_df_property(field, "read_only", 1);
+					});
+				}
 				break;
 
 			case "Costing Done":
@@ -105,10 +124,12 @@ frappe.ui.form.on("Pre-Quotation", {
 					});
 				}
 				// For other roles, table and fields are read-only or hidden based on permlevels
-				frm.set_df_property("custom_furniture_items", "read_only", 1);
-				main_fields_to_manage.forEach(field => {
-					frm.set_df_property(field, "read_only", 1);
-				});
+				if (!is_sales_manager) {
+					frm.set_df_property("custom_furniture_items", "read_only", 1);
+					main_fields_to_manage.forEach(field => {
+						frm.set_df_property(field, "read_only", 1);
+					});
+				}
 				break;
 
 			case "Converted to Quotation":
@@ -229,5 +250,11 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
+
+
+
+
+
+
 
 
