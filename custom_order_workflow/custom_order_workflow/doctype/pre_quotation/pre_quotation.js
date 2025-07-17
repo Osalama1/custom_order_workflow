@@ -178,31 +178,23 @@ function calculate_item_totals(frm, cdt, cdn) {
 }
 
 function calculate_totals(frm) {
-	let total_material_cost = 0;
-	let total_labor_cost = 0;
-	let total_overhead_cost = 0;
 	let total_selling_price_before_vat = 0;
+	let estimated_total_cost = 0;
 	
 	frm.doc.custom_furniture_items.forEach(function(item) {
-		total_material_cost += (item.material_cost || 0) * (item.quantity || 0);
-		total_labor_cost += (item.labor_cost || 0) * (item.quantity || 0);
-		total_overhead_cost += (item.overhead_cost || 0) * (item.quantity || 0);
+		estimated_total_cost += (item.total_cost || 0) * (item.quantity || 0);
 		total_selling_price_before_vat += item.total_selling_amount || 0;
 	});
 	
-	let total_cost = total_material_cost + total_labor_cost + total_overhead_cost;
-	let total_profit = total_selling_price_before_vat - total_cost;
-	let profit_margin = total_cost > 0 ? (total_profit / total_cost) * 100 : 0;
+	let total_profit = total_selling_price_before_vat - estimated_total_cost;
+	let profit_margin = estimated_total_cost > 0 ? (total_profit / estimated_total_cost) * 100 : 0;
 	
 	// Calculate VAT
 	let vat_rate = frm.doc.vat_rate || 0;
 	let total_vat_amount = total_selling_price_before_vat * (vat_rate / 100);
 	let total_selling_price_after_vat = total_selling_price_before_vat + total_vat_amount;
 
-	frm.set_value("total_material_cost", total_material_cost);
-	frm.set_value("total_labor_cost", total_labor_cost);
-	frm.set_value("total_overhead_cost", total_overhead_cost);
-	frm.set_value("estimated_total_cost", total_cost);
+	frm.set_value("estimated_total_cost", estimated_total_cost);
 	frm.set_value("estimated_selling_price", total_selling_price_after_vat);
 	frm.set_value("total_profit_amount", total_profit);
 	frm.set_value("overall_profit_margin", profit_margin);
@@ -222,7 +214,5 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
-
-
 
 

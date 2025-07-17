@@ -21,22 +21,22 @@ class PreQuotationItem(Document):
         self.total_cost = material_cost + labor_cost + overhead_cost
         
         # Calculate selling price based on profit margin if not manually set
-        if self.profit_margin_percent and not self.selling_price:
+        if self.profit_margin_percent and not self.selling_price_per_unit:
             profit_multiplier = 1 + (flt(self.profit_margin_percent) / 100)
-            self.selling_price = flt(self.total_cost * profit_multiplier, 2)
+            self.selling_price_per_unit = flt(self.total_cost * profit_multiplier, 2)
         
         # Calculate profit margin if selling price is set but margin is not
-        elif self.selling_price and not self.profit_margin_percent and self.total_cost > 0:
-            profit_amount = flt(self.selling_price) - flt(self.total_cost)
+        elif self.selling_price_per_unit and not self.profit_margin_percent and self.total_cost > 0:
+            profit_amount = flt(self.selling_price_per_unit) - flt(self.total_cost)
             self.profit_margin_percent = flt((profit_amount / self.total_cost) * 100, 2)
         
         # Calculate total selling amount
         quantity = flt(self.quantity, 2)
-        selling_price = flt(self.selling_price, 2)
+        selling_price_per_unit = flt(self.selling_price_per_unit, 2)
         total_cost = flt(self.total_cost, 2)
         
-        self.total_selling_amount = quantity * selling_price
-        self.profit_amount = quantity * (selling_price - total_cost)
+        self.total_selling_amount = quantity * selling_price_per_unit
+        self.profit_amount = quantity * (selling_price_per_unit - total_cost)
     
     def before_save(self):
         """Ensure calculations are up to date before saving"""
@@ -50,9 +50,9 @@ class PreQuotationItem(Document):
             "labor_cost": flt(self.labor_cost, 2),
             "overhead_cost": flt(self.overhead_cost, 2),
             "total_cost": flt(self.total_cost, 2),
-            "selling_price": flt(self.selling_price, 2),
+            "selling_price_per_unit": flt(self.selling_price_per_unit, 2),
             "profit_margin_percent": flt(self.profit_margin_percent, 2),
-            "profit_amount_per_unit": flt(self.selling_price, 2) - flt(self.total_cost, 2),
+            "profit_amount_per_unit": flt(self.selling_price_per_unit, 2) - flt(self.total_cost, 2),
             "total_selling_amount": flt(self.total_selling_amount, 2),
             "total_profit_amount": flt(self.profit_amount, 2)
         }
@@ -84,31 +84,31 @@ class PreQuotationItem(Document):
         base_cost = 100  # Base material cost
         
         # Adjust based on material type
-        material = specs.get('material', '').lower()
+        material = specs.get("material", "").lower()
         material_multipliers = {
-            'wood': 1.0,
-            'metal': 1.2,
-            'glass': 1.5,
-            'fabric': 0.8,
-            'plastic': 0.6
+            "wood": 1.0,
+            "metal": 1.2,
+            "glass": 1.5,
+            "fabric": 0.8,
+            "plastic": 0.6
         }
         
         multiplier = material_multipliers.get(material, 1.0)
         
         # Adjust based on dimensions if available
-        if specs.get('length') and specs.get('width'):
+        if specs.get("length") and specs.get("width"):
             try:
-                length = float(specs['length'])
-                width = float(specs['width'])
+                length = float(specs["length"])
+                width = float(specs["width"])
                 area = (length * width) / 10000  # Convert cm² to m²
                 base_cost *= max(area, 0.5)  # Minimum area factor
             except (ValueError, TypeError):
                 pass
         
         # Adjust based on area for flooring/structures
-        if specs.get('area'):
+        if specs.get("area"):
             try:
-                area = float(specs['area'])
+                area = float(specs["area"])
                 base_cost = area * 50  # Cost per square meter
             except (ValueError, TypeError):
                 pass
@@ -121,20 +121,20 @@ class PreQuotationItem(Document):
         base_labor = 50  # Base labor cost
         
         # Adjust based on complexity
-        if specs.get('features'):
-            features = specs['features'].lower()
-            if 'adjustable' in features:
+        if specs.get("features"):
+            features = specs["features"].lower()
+            if "adjustable" in features:
                 base_labor *= 1.3
-            if 'wheels' in features:
+            if "wheels" in features:
                 base_labor *= 1.2
         
         # Adjust based on finish
-        finish = specs.get('finish', '').lower()
+        finish = specs.get("finish", "").lower()
         finish_multipliers = {
-            'matte': 1.0,
-            'glossy': 1.3,
-            'textured': 1.4,
-            'natural': 1.1
+            "matte": 1.0,
+            "glossy": 1.3,
+            "textured": 1.4,
+            "natural": 1.1
         }
         
         multiplier = finish_multipliers.get(finish, 1.0)
@@ -149,4 +149,5 @@ class PreQuotationItem(Document):
         
         overhead_rate = 0.25  # 25% overhead
         self.overhead_cost = flt((material_cost + labor_cost) * overhead_rate, 2)
+
 
