@@ -7,7 +7,7 @@ frappe.ui.form.on("Pre-Quotation", {
 		calculate_totals(frm);
 
 		// Dynamic field visibility and editability based on status
-		const is_draft = frm.doc.docstatus === 0;
+		const is_draft = frm.doc.docstatus === 0 && frm.doc.status === "Draft";
 		const is_submitted_to_manufacturing = frm.doc.docstatus === 0 && frm.doc.status === "Submitted to Manufacturing";
 		const is_costing_done = frm.doc.docstatus === 0 && frm.doc.status === "Costing Done";
 		const is_approved_internally = frm.doc.docstatus === 0 && frm.doc.status === "Approved Internally";
@@ -227,5 +227,7 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
+
+
 
 
