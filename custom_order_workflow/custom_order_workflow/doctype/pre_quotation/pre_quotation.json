@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2024-01-01 00:00:00.000000",
+ "creation": "2024-01-01 00:00:00",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -27,12 +27,14 @@
   "total_profit_amount",
   "overall_profit_margin",
   "total_vat_amount",
-  "vat_rate"
+  "vat_rate",
+  "amended_from"
  ],
  "fields": [
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Series",
    "options": "PRE-QTN-.YYYY.-",
    "reqd": 1
@@ -67,6 +69,7 @@
    "default": "Today",
    "fieldname": "pre_quotation_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Pre-Quotation Date",
    "reqd": 1
   },
@@ -79,6 +82,7 @@
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Status",
    "options": "Draft\nSubmitted to Manufacturing\nCosting Done\nApproved Internally\nConverted to Quotation\nRejected\nCancelled",
    "reqd": 1
@@ -93,7 +97,6 @@
    "fieldtype": "Text Editor",
    "label": "Notes"
   },
-
   {
    "fieldname": "section_break_11",
    "fieldtype": "Section Break",
@@ -133,7 +136,8 @@
    "read_only": 1
   },
   {
-   "fieldname": "overall_profit_margin"
+   "fieldname": "overall_profit_margin",
+   "fieldtype": "Data"
   },
   {
    "fieldname": "total_vat_amount",
@@ -142,23 +146,59 @@
    "read_only": 1
   },
   {
+   "default": "15",
    "fieldname": "vat_rate",
    "fieldtype": "Percent",
+   "in_list_view": 1,
    "label": "VAT Rate",
-   "default": "15",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pre-Quotation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-01 00:00:00.000000",
+ "modified": "2025-07-17 12:11:08.701628",
  "modified_by": "Administrator",
  "module": "Custom Order Workflow",
  "name": "Pre-Quotation",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Manufacturing User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
   {
    "create": 1,
    "delete": 1,
@@ -175,32 +215,36 @@
   {
    "create": 1,
    "read": 1,
-   "report": 1,
-   "role": "Sales Manager",
-   "submit": 1,
-   "write": 1,
-   "permlevel": 1
-  },
-  {
-   "create": 1,
-   "read": 1,
    "role": "Sales User",
    "write": 1
   },
   {
    "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
    "read": 1,
    "report": 1,
    "role": "Manufacturing User",
-   "write": 1,
-   "permlevel": 1
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "title_field": "customer"
+ "title_field": "customer",
+ "track_changes": 1
 }
-
-

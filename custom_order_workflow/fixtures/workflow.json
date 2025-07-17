@@ -1,86 +1,154 @@
 [
-    {
-     "doctype": "Workflow",
-     "name": "Pre-Quotation Workflow",
-     "document_type": "Pre-Quotation",
-     "workflow_name": "Pre-Quotation Workflow",
-     "is_active": 1,
-     "send_email_alert": 1,
-     "workflow_state_field": "status",
-     "states": [
-      {
-       "state": "Draft",
-       "doc_status": 0,
-       "allow_edit": "Sales User",
-       "is_optional_state": 0
-      },
-      {
-       "state": "Submitted to Manufacturing",
-       "doc_status": 1,
-       "allow_edit": "Manufacturing User",
-       "is_optional_state": 0
-      },
-      {
-       "state": "Costing Done",
-       "doc_status": 1,
-       "allow_edit": "Sales Manager",
-       "is_optional_state": 0
-      },
-      {
-       "state": "Approved Internally",
-       "doc_status": 1,
-       "allow_edit": "Sales Manager",
-       "is_optional_state": 0
-      },
-      {
-       "state": "Rejected",
-       "doc_status": 2,
-       "allow_edit": "Sales Manager",
-       "is_optional_state": 0
-      }
-     ],
-     "transitions": [
-      {
-       "state": "Draft",
-       "action": "Submit to Manufacturing",
-       "next_state": "Submitted to Manufacturing",
-       "allowed": "Sales User",
-       "allow_self_approval": 0,
-       "condition": ""
-      },
-      {
-       "state": "Submitted to Manufacturing",
-       "action": "Complete Costing",
-       "next_state": "Costing Done",
-       "allowed": "Manufacturing User",
-       "allow_self_approval": 0,
-       "condition": ""
-      },
-      {
-       "state": "Submitted to Manufacturing",
-       "action": "Reject",
-       "next_state": "Rejected",
-       "allowed": "Manufacturing User",
-       "allow_self_approval": 0,
-       "condition": ""
-      },
-      {
-       "state": "Costing Done",
-       "action": "Approve Internally",
-       "next_state": "Approved Internally",
-       "allowed": "Sales Manager",
-       "allow_self_approval": 0,
-       "condition": ""
-      },
-      {
-       "state": "Costing Done",
-       "action": "Reject",
-       "next_state": "Rejected",
-       "allowed": "Sales Manager",
-       "allow_self_approval": 0,
-       "condition": ""
-      }
-     ]
-    }
-   ]
-   
+ {
+  "docstatus": 0,
+  "doctype": "Workflow",
+  "document_type": "Pre-Quotation",
+  "is_active": 1,
+  "modified": "2025-07-17 11:59:34.446317",
+  "name": "Pre-Quotation Workflow",
+  "override_status": 0,
+  "send_email_alert": 1,
+  "states": [
+   {
+    "allow_edit": "Sales User",
+    "avoid_status_override": 0,
+    "doc_status": "0",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Draft",
+    "update_field": null,
+    "update_value": null,
+    "workflow_builder_id": null
+   },
+   {
+    "allow_edit": "Manufacturing User",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Submitted to Manufacturing",
+    "update_field": null,
+    "update_value": null,
+    "workflow_builder_id": null
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Costing Done",
+    "update_field": null,
+    "update_value": null,
+    "workflow_builder_id": null
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Approved Internally",
+    "update_field": null,
+    "update_value": null,
+    "workflow_builder_id": null
+   },
+   {
+    "allow_edit": "Sales Manager",
+    "avoid_status_override": 0,
+    "doc_status": "2",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Rejected",
+    "update_field": null,
+    "update_value": null,
+    "workflow_builder_id": null
+   }
+  ],
+  "transitions": [
+   {
+    "action": "Submit to Manufacturing",
+    "allow_self_approval": 0,
+    "allowed": "Sales User",
+    "condition": "",
+    "next_state": "Submitted to Manufacturing",
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Draft",
+    "workflow_builder_id": null
+   },
+   {
+    "action": "Complete Costing",
+    "allow_self_approval": 0,
+    "allowed": "Manufacturing User",
+    "condition": "",
+    "next_state": "Costing Done",
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Submitted to Manufacturing",
+    "workflow_builder_id": null
+   },
+   {
+    "action": "Reject",
+    "allow_self_approval": 0,
+    "allowed": "Manufacturing User",
+    "condition": "",
+    "next_state": "Rejected",
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Submitted to Manufacturing",
+    "workflow_builder_id": null
+   },
+   {
+    "action": "Approve Internally",
+    "allow_self_approval": 0,
+    "allowed": "Sales Manager",
+    "condition": "",
+    "next_state": "Approved Internally",
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Costing Done",
+    "workflow_builder_id": null
+   },
+   {
+    "action": "Reject",
+    "allow_self_approval": 0,
+    "allowed": "Sales Manager",
+    "condition": "",
+    "next_state": "Rejected",
+    "parent": "Pre-Quotation Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Costing Done",
+    "workflow_builder_id": null
+   }
+  ],
+  "workflow_data": null,
+  "workflow_name": "Pre-Quotation Workflow",
+  "workflow_state_field": "status"
+ }
+]
