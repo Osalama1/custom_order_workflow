@@ -41,17 +41,19 @@ frappe.ui.form.on("Pre-Quotation", {
 		});
 
 		if (is_draft) {
-			// In Draft state, all item fields are visible and editable
-			item_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 0, "custom_furniture_items");
-				frm.set_df_property(field, "read_only", 0, "custom_furniture_items");
-			});
-			// Hide cost and pricing summary fields in main form
-			main_fields_to_manage.forEach(field => {
-				frm.set_df_property(field, "hidden", 1);
-			});
-			frm.set_df_property("vat_rate", "hidden", 0); // VAT rate should be visible in draft
-			frm.set_df_property("vat_rate", "read_only", 0); // VAT rate should be editable in draft
+			// In Draft state, only Item/Description, Quantity, and Attached Image are visible and editable
+			frm.set_df_property("item_name", "hidden", 0, "custom_furniture_items");
+			frm.set_df_property("item_name", "read_only", 0, "custom_furniture_items");
+			frm.set_df_property("description", "hidden", 0, "custom_furniture_items");
+			frm.set_df_property("description", "read_only", 0, "custom_furniture_items");
+			frm.set_df_property("quantity", "hidden", 0, "custom_furniture_items");
+			frm.set_df_property("quantity", "read_only", 0, "custom_furniture_items");
+			frm.set_df_property("attached_image", "hidden", 0, "custom_furniture_items");
+			frm.set_df_property("attached_image", "read_only", 0, "custom_furniture_items");
+			
+			// VAT rate should be visible and editable in draft
+			frm.set_df_property("vat_rate", "hidden", 0);
+			frm.set_df_property("vat_rate", "read_only", 0);
 
 		} else if (is_submitted_to_manufacturing) {
 			// Make custom_furniture_items read-only
@@ -220,5 +222,7 @@ function create_quotation_from_pre_quotation(frm) {
 		}
 	});
 }
+
+
 
 

@@ -21,14 +21,13 @@
   "section_break_11",
   "custom_furniture_items",
   "section_break_13",
-  "total_material_cost",
-  "total_labor_cost",
-  "total_overhead_cost",
   "column_break_pricing",
   "estimated_total_cost",
   "estimated_selling_price",
   "total_profit_amount",
-  "overall_profit_margin"
+  "overall_profit_margin",
+  "total_vat_amount",
+  "vat_rate"
  ],
  "fields": [
   {
@@ -110,24 +109,6 @@
    "fieldname": "section_break_13",
    "fieldtype": "Section Break",
    "label": "Pricing Summary"
-  },
-  {
-   "fieldname": "total_material_cost",
-   "fieldtype": "Currency",
-   "label": "Total Material Cost",
-   "read_only": 1
-  },
-  {
-   "fieldname": "total_labor_cost",
-   "fieldtype": "Currency",
-   "label": "Total Labor Cost",
-   "read_only": 1
-  },
-  {
-   "fieldname": "total_overhead_cost",
-   "fieldtype": "Currency",
-   "label": "Total Overhead Cost",
-   "read_only": 1
   },
   {
    "fieldname": "column_break_pricing",
@@ -212,4 +193,5 @@
  "track_changes": 1,
  "title_field": "customer"
 }
+
 
