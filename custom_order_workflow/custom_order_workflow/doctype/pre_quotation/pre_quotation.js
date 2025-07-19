@@ -56,9 +56,11 @@ frappe.ui.form.on("Pre-Quotation", {
 frappe.ui.form.on("Pre-Quotation Item", {
 	
 	quantity: function(frm, cdt, cdn) {
-		let row = locals[cdt][cdn];
-		row.total_cost = flt(row.quantity * row.cost_per_unit);
 		calculate_item_totals(frm, cdt, cdn);
+		selling_price_per_unit (frm, cdt, cdn) 
+		profit_margin_percent(frm, cdt, cdn) 
+
+
 	},
 	cost_per_unit: function(frm, cdt, cdn) {
 		let row = locals[cdt][cdn];
