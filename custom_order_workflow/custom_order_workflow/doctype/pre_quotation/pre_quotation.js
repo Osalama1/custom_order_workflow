@@ -43,7 +43,7 @@ frappe.ui.form.on("Pre-Quotation", {
 	// Auto-populate contact person and email based on Lead or Customer selection
 	lead: function(frm) {
 		if (frm.doc.lead) {
-			frappe.db.get_value("Lead", frm.doc.lead, ["contact_person", "email_id"], function(r) {
+			frappe.db.get_value("Lead", frm.doc.lead, ["mobile_no", "email_id"], function(r) {
 				frm.set_value("contact_person", r.contact_person);
 				frm.set_value("contact_email", r.email_id);
 			});
@@ -55,7 +55,7 @@ frappe.ui.form.on("Pre-Quotation", {
 
 	customer: function(frm) {
 		if (frm.doc.customer) {
-			frappe.db.get_value("Customer", frm.doc.customer, ["contact_person", "email_id"], function(r) {
+			frappe.db.get_value("Customer", frm.doc.customer, ["mobile_no", "email_id"], function(r) {
 				frm.set_value("contact_person", r.contact_person);
 				frm.set_value("contact_email", r.email_id);
 			});
