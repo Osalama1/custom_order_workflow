@@ -112,7 +112,7 @@ function calculate_main_form_totals(frm) {
 		total_profit_amount += row.profit_amount;
 	});
 
-	frm.set_value("estimated_total_cost", total_cost);
+	frm.set_value("calculate_main_form_totals", total_cost);
 	frm.set_value("estimated_selling_price", total_selling_price);
 	frm.set_value("total_vat_amount", total_vat_amount);
 	frm.set_value("total_profit_amount", total_profit_amount);
@@ -255,6 +255,7 @@ function setup_field_visibility(frm) {
 
 		case "Converted to Quotation":
 			// Add custom button for creating Quotation
+			if (is_sales_manager) {
 		frm.add_custom_button(__("Create Quotation"), function() {
 			frappe.call({
 				method: "custom_order_workflow.custom_order_workflow.doctype.pre_quotation.pre_quotation.create_quotation_from_pre_quotation",
@@ -269,6 +270,7 @@ function setup_field_visibility(frm) {
 				}
 			});
 		}, __("Create"), "btn-primary");
+	}
 			// All fields visible but read-only
 			all_item_fields.forEach(field => {
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
