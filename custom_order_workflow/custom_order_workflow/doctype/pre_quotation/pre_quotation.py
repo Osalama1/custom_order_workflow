@@ -230,28 +230,37 @@ def create_quotation_from_pre_quotation(docname):
         frappe.throw("Pre-Quotation must be in 'Converted to Quotation' status to create a Quotation.")
 
     quotation = frappe.new_doc("Quotation")
-    quotation.customer = pre_quotation.customer
-    quotation.lead = pre_quotation.lead
-    quotation.contact_person = pre_quotation.contact_person
-    quotation.contact_email = pre_quotation.contact_email
     quotation.transaction_date = nowdate()
     quotation.valid_until = pre_quotation.valid_until
+    quotation.contact_person = pre_quotation.contact_person
+    quotation.contact_email = pre_quotation.contact_email
+
+    # Set quotation_to and party_name based on lead or customer
+    if pre_quotation.customer:
+        quotation.quotation_to = "Customer"
+        quotation.party_name = pre_quotation.customer
+        quotation.customer = pre_quotation.customer
+    elif pre_quotation.lead:
+        quotation.quotation_to = "Lead"
+        quotation.party_name = pre_quotation.lead
+        quotation.lead = pre_quotation.lead
 
     for item_data in pre_quotation.custom_furniture_items:
         item_code = item_data.item_name
-        
+
         # Check if item exists, if not, create it
         if not frappe.db.exists("Item", item_code):
             new_item = frappe.new_doc("Item")
             new_item.item_code = item_code
             new_item.item_name = item_data.item_name
             new_item.description = item_data.description
-            new_item.is_stock_item = 0  # Assuming it's a service or non-stock item
-            new_item.item_group = "Products" # You might want to set a default item group
+            new_item.item_group = "Custom Furniture"
+            new_item.stock_uom = item_data.uom
+            new_item.is_stock_item = 1
+            new_item.valuation_rate = item_data.cost_per_unit or 0
             new_item.save(ignore_permissions=True)
             frappe.db.commit()
 
-            # Attach image if available
             if item_data.attached_image:
                 frappe.db.set_value("Item", item_code, "image", item_data.attached_image)
                 frappe.db.commit()
@@ -268,13 +277,8 @@ def create_quotation_from_pre_quotation(docname):
             "base_amount": item_data.total_selling_amount,
             "vat_rate": item_data.vat_rate_item
         })
-    
+
     quotation.set_onload("pre_quotation_id", pre_quotation.name)
     quotation.insert()
-    
-    pre_quotation.db_set("quotation_created", 1)
-    pre_quotation.db_set("quotation_name", quotation.name)
-    
+
     return quotation.name
-
-

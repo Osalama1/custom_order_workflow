@@ -14,7 +14,11 @@ frappe.ui.form.on("Pre-Quotation", {
 
 		setup_field_visibility(frm);
 	},
-
+	validate: function(frm) {
+        if (!frm.doc.lead && !frm.doc.customer) {
+            frappe.throw(__("Please enter either a Lead or a Customer."));
+        }
+    },
 	refresh: function(frm) {
 		setup_field_visibility(frm);
 	},

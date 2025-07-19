@@ -236,6 +236,18 @@ fixtures = [
                 "Cancel"
             ]]
         }
+    },
+   {
+        "doctype": "Custom Field",
+        "filters": {
+            "dt": ["=", "Pre-Quotation"]
+        }
+    },
+    {
+        "doctype": "Custom DocPerm",
+        "filters": {
+            "parent": ["=", "Pre-Quotation"]
+        }
     }
 ]
 
