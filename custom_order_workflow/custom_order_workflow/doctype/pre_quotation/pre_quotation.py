@@ -237,18 +237,36 @@ def create_quotation_from_pre_quotation(docname):
     quotation.transaction_date = nowdate()
     quotation.valid_until = pre_quotation.valid_until
 
-    for item in pre_quotation.custom_furniture_items:
+    for item_data in pre_quotation.custom_furniture_items:
+        item_code = item_data.item_name
+        
+        # Check if item exists, if not, create it
+        if not frappe.db.exists("Item", item_code):
+            new_item = frappe.new_doc("Item")
+            new_item.item_code = item_code
+            new_item.item_name = item_data.item_name
+            new_item.description = item_data.description
+            new_item.is_stock_item = 0  # Assuming it's a service or non-stock item
+            new_item.item_group = "Products" # You might want to set a default item group
+            new_item.save(ignore_permissions=True)
+            frappe.db.commit()
+
+            # Attach image if available
+            if item_data.attached_image:
+                frappe.db.set_value("Item", item_code, "image", item_data.attached_image)
+                frappe.db.commit()
+
         quotation.append("items", {
-            "item_code": item.item_name, # Assuming item_name can be used as item_code
-            "item_name": item.item_name,
-            "description": item.description,
-            "qty": item.quantity,
-            "uom": item.uom,
-            "rate": item.selling_price_per_unit,
-            "amount": item.total_selling_amount,
-            "base_rate": item.selling_price_per_unit, # Assuming base_rate is same as rate
-            "base_amount": item.total_selling_amount,
-            "vat_rate": item.vat_rate_item
+            "item_code": item_code,
+            "item_name": item_data.item_name,
+            "description": item_data.description,
+            "qty": item_data.quantity,
+            "uom": item_data.uom,
+            "rate": item_data.selling_price_per_unit,
+            "amount": item_data.total_selling_amount,
+            "base_rate": item_data.selling_price_per_unit,
+            "base_amount": item_data.total_selling_amount,
+            "vat_rate": item_data.vat_rate_item
         })
     
     quotation.set_onload("pre_quotation_id", pre_quotation.name)
@@ -258,4 +276,5 @@ def create_quotation_from_pre_quotation(docname):
     pre_quotation.db_set("quotation_name", quotation.name)
     
     return quotation.name
+
 
