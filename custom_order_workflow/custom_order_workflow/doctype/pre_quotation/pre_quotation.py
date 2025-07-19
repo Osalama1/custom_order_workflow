@@ -79,7 +79,7 @@ class PreQuotation(Document):
             self.contact_email = customer.email_id
         elif self.lead:
             lead = frappe.get_doc("Lead", self.lead)
-            self.contact_person = lead.contact_person
+            self.contact_person = lead.mobile_no
             self.contact_email = lead.email_id
 
     def apply_bulk_costing(self, material_rate=None, labor_rate=None, overhead_rate=None):
