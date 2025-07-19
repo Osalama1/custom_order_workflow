@@ -24,9 +24,10 @@
   "column_break_pricing",
   "estimated_total_cost",
   "estimated_selling_price",
-  "overall_profit_margin",
+  "total_profit_amount",
   "total_vat_amount",
-  "amended_from"
+  "amended_from",
+  "overall_profit_margin"
  ],
  "fields": [
   {
@@ -128,10 +129,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "overall_profit_margin",
-   "fieldtype": "Data"
-  },
-  {
    "fieldname": "total_vat_amount",
    "fieldtype": "Currency",
    "label": "Total VAT Amount",
@@ -146,12 +143,22 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "total_profit_amount",
+   "fieldtype": "Float",
+   "label": "total profit amount"
+  },
+  {
+   "fieldname": "overall_profit_margin",
+   "fieldtype": "Float",
+   "label": "overall profit margin "
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-17 12:11:08.701628",
+ "modified": "2025-07-18 01:30:52.373255",
  "modified_by": "Administrator",
  "module": "Custom Order Workflow",
  "name": "Pre-Quotation",
@@ -232,4 +239,3 @@
  "title_field": "customer",
  "track_changes": 1
 }
-

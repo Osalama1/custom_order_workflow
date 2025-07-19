@@ -1,43 +1,62 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-01-01 00:00:00.000000",
+ "creation": "2024-01-01 00:00:00",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
+ "field_order": [
+  "item_name",
+  "description",
+  "quantity",
+  "attached_image",
+  "uom",
+  "section_break_6",
+  "cost_per_unit",
+  "column_break_13",
+  "total_cost",
+  "profit_margin_percent",
+  "selling_price_per_unit",
+  "column_break_17",
+  "total_selling_amount",
+  "profit_amount",
+  "vat_rate_item",
+  "section_break_20",
+  "manufacturing_notes",
+  "sales_notes"
+ ],
  "fields": [
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
-    "in_list_view": 1,
+   "in_list_view": 1,
    "label": "Item/Description"
   },
   {
    "fieldname": "description",
    "fieldtype": "Text",
-   "label": "Description",
-   "in_list_view": 0
+   "label": "Description"
   },
   {
+   "columns": 1,
    "fieldname": "quantity",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Quantity",
-   "reqd": 1,
-   "precision": 2
+   "precision": "2",
+   "reqd": 1
   },
   {
    "fieldname": "attached_image",
    "fieldtype": "Attach Image",
-   "label": "Attached Image",
-   "in_list_view": 1
+   "label": "Attached Image"
   },
   {
+   "default": "Nos",
    "fieldname": "uom",
    "fieldtype": "Link",
    "label": "UOM",
-   "options": "UOM",
-   "default": "Nos"
+   "options": "UOM"
   },
   {
    "fieldname": "section_break_6",
@@ -45,66 +64,79 @@
    "label": "Costing"
   },
   {
+   "columns": 1,
    "fieldname": "cost_per_unit",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Cost per Unit",
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 1,
+   "precision": "2"
   },
   {
    "fieldname": "column_break_13",
    "fieldtype": "Column Break"
   },
   {
+   "columns": 1,
    "fieldname": "total_cost",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Total Cost",
-   "read_only": 1,
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 2,
+   "precision": "2",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "profit_margin_percent",
    "fieldtype": "Percent",
+   "in_list_view": 1,
    "label": "Profit Margin %",
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 2,
+   "precision": "2"
   },
   {
+   "columns": 1,
    "fieldname": "selling_price_per_unit",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Selling Price (per unit)",
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 2,
+   "precision": "2"
   },
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
+   "columns": 1,
    "fieldname": "total_selling_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Selling Amount",
-   "read_only": 1,
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 2,
+   "precision": "2",
+   "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "profit_amount",
    "fieldtype": "Currency",
    "label": "Profit Amount",
-   "read_only": 1,
-   "precision": 2,
-   "permlevel": 1
+   "permlevel": 2,
+   "precision": "2",
+   "read_only": 1
   },
   {
+   "columns": 1,
+   "default": "15",
    "fieldname": "vat_rate_item",
    "fieldtype": "Percent",
+   "in_list_view": 1,
    "label": "VAT Rate (Item)",
-   "default": "15",
-   "precision": 2
+   "permlevel": 2,
+   "precision": "2",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_20",
@@ -125,7 +157,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-01-01 00:00:00.000000",
+ "modified": "2025-07-18 01:42:52.188324",
  "modified_by": "Administrator",
  "module": "Custom Order Workflow",
  "name": "Pre-Quotation Item",
@@ -136,7 +168,3 @@
  "states": [],
  "track_changes": 1
 }
-
-
-
-
