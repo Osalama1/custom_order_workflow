@@ -8,36 +8,19 @@ frappe.ui.form.on("Pre-Quotation", {
 			frm.set_df_property("vat_rate", "hidden", 1);
 		}
 
-		// Add custom button for creating Quotation
-		frm.add_custom_button(__("Create Quotation"), function() {
-			frappe.call({
-				method: "custom_order_workflow.custom_order_workflow.doctype.pre_quotation.pre_quotation.create_quotation_from_pre_quotation",
-				args: {
-					docname: frm.doc.name
-				},
-				callback: function(r) {
-					if (r.message) {
-						frappe.msgprint(__("Quotation {0} created successfully", [r.message]));
-						frappe.set_route("Form", "Quotation", r.message);
-					}
-				}
-			});
-		}, __("Create"), "btn-primary");
-
+		
+	
 		// Hide the button by default and show only when status is "Converted to Quotation"
-		frm.toggle_display("create_quotation", frm.doc.status === "Converted to Quotation");
 
 		setup_field_visibility(frm);
 	},
 
 	refresh: function(frm) {
 		setup_field_visibility(frm);
-		frm.toggle_display("create_quotation", frm.doc.status === "Converted to Quotation");
 	},
 
 	status: function(frm) {
 		setup_field_visibility(frm);
-		frm.toggle_display("create_quotation", frm.doc.status === "Converted to Quotation");
 	},
 
 	// Auto-populate contact person and email based on Lead or Customer selection
@@ -267,6 +250,21 @@ function setup_field_visibility(frm) {
 			break;
 
 		case "Converted to Quotation":
+			// Add custom button for creating Quotation
+		frm.add_custom_button(__("Create Quotation"), function() {
+			frappe.call({
+				method: "custom_order_workflow.custom_order_workflow.doctype.pre_quotation.pre_quotation.create_quotation_from_pre_quotation",
+				args: {
+					docname: frm.doc.name
+				},
+				callback: function(r) {
+					if (r.message) {
+						frappe.msgprint(__("Quotation {0} created successfully", [r.message]));
+						frappe.set_route("Form", "Quotation", r.message);
+					}
+				}
+			});
+		}, __("Create"), "btn-primary");
 			// All fields visible but read-only
 			all_item_fields.forEach(field => {
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
