@@ -56,14 +56,20 @@ frappe.ui.form.on("Pre-Quotation", {
 frappe.ui.form.on("Pre-Quotation Item", {
 	
 	quantity: function(frm, cdt, cdn) {
+		let row = locals[cdt][cdn];
+		row.total_cost = flt(row.quantity * row.cost_per_unit);
 		calculate_item_totals(frm, cdt, cdn);
 	},
 	cost_per_unit: function(frm, cdt, cdn) {
+		let row = locals[cdt][cdn];
+		row.total_cost = flt(row.quantity * row.cost_per_unit);
 		calculate_item_totals(frm, cdt, cdn);
 	},
 		// When selling price is changed
 		selling_price_per_unit: function(frm, cdt, cdn) {
 			let row = locals[cdt][cdn];
+			row.total_cost = flt(row.quantity * row.cost_per_unit);
+
 			if (row.cost_per_unit > 0) {
 				row.profit_margin_percent = flt(((row.selling_price_per_unit - row.cost_per_unit) / row.cost_per_unit) * 100, 2);
 				row.total_selling_amount = flt(row.quantity * row.selling_price_per_unit);
@@ -77,6 +83,8 @@ frappe.ui.form.on("Pre-Quotation Item", {
 		// When profit margin is changed
 		profit_margin_percent: function(frm, cdt, cdn) {
 			let row = locals[cdt][cdn];
+			row.total_cost = flt(row.quantity * row.cost_per_unit);
+
 			row.selling_price_per_unit = flt(row.cost_per_unit * (1 + row.profit_margin_percent / 100), 2);
 			row.total_selling_amount = flt(row.quantity * row.selling_price_per_unit);
 			row.vat_amount_item = flt(row.total_selling_amount * (row.vat_rate_item / 100), 2);
