@@ -112,7 +112,7 @@ function calculate_main_form_totals(frm) {
 		total_profit_amount += row.profit_amount;
 	});
 
-	frm.set_value("calculate_main_form_totals", total_cost);
+	frm.set_value("estimated_total_cost", total_cost);
 	frm.set_value("estimated_selling_price", total_selling_price);
 	frm.set_value("total_vat_amount", total_vat_amount);
 	frm.set_value("total_profit_amount", total_profit_amount);
