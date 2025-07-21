@@ -205,7 +205,7 @@ function setup_field_visibility(frm) {
 			} else {
 				// For other roles, all fields are read-only and hidden as per default
 				// Show only basic item details
-				["item_name", "quantity", "attached_image"].forEach(field => {
+				["item_name", "quantity", "attached_image","description"].forEach(field => {
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "read_only", 1);
 				});
@@ -218,7 +218,7 @@ function setup_field_visibility(frm) {
 				frm.set_df_property("custom_furniture_items", "read_only", 0);
 			
 				// Show read-only item basics
-				["item_name", "quantity", "attached_image"].forEach(field => {
+				["item_name", "quantity", "attached_image","description"].forEach(field => {
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "read_only", 1);
 				});

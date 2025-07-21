@@ -33,8 +33,10 @@
    "label": "Item/Description"
   },
   {
+   "columns": 1,
    "fieldname": "description",
    "fieldtype": "Text",
+   "in_list_view": 1,
    "label": "Description"
   },
   {
@@ -49,7 +51,8 @@
   {
    "fieldname": "attached_image",
    "fieldtype": "Attach Image",
-   "label": "Attached Image"
+   "label": "Attached Image",
+   "make_attachment_public": 1
   },
   {
    "default": "Nos",
@@ -82,7 +85,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Cost",
-   "permlevel": 2,
+   "permlevel": 1,
    "precision": "2",
    "read_only": 1
   },
@@ -133,7 +136,7 @@
    "fieldname": "vat_rate_item",
    "fieldtype": "Percent",
    "in_list_view": 1,
-   "label": "VAT Rate (Item)",
+   "label": "VAT",
    "permlevel": 2,
    "precision": "2",
    "read_only": 1
@@ -157,12 +160,13 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-18 01:42:52.188324",
+ "modified": "2025-07-21 15:11:20.247166",
  "modified_by": "Administrator",
  "module": "Custom Order Workflow",
  "name": "Pre-Quotation Item",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

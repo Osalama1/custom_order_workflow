@@ -19,6 +19,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Draft",
     "update_field": null,
     "update_value": null,
@@ -34,6 +35,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Submitted to Manufacturing",
     "update_field": null,
     "update_value": null,
@@ -49,6 +51,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Costing Done",
     "update_field": null,
     "update_value": null,
@@ -64,6 +67,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Approved Internally",
     "update_field": null,
     "update_value": null,
@@ -79,6 +83,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Converted to Quotation",
     "update_field": null,
     "update_value": null,
@@ -94,6 +99,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Rejected",
     "update_field": null,
     "update_value": null,
@@ -109,6 +115,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
+    "send_email": 0,
     "state": "Cancelled",
     "update_field": null,
     "update_value": null,
@@ -125,6 +132,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Draft",
     "workflow_builder_id": null
    },
@@ -137,6 +145,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Submitted to Manufacturing",
     "workflow_builder_id": null
    },
@@ -149,6 +158,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Submitted to Manufacturing",
     "workflow_builder_id": null
    },
@@ -161,6 +171,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Costing Done",
     "workflow_builder_id": null
    },
@@ -173,6 +184,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Costing Done",
     "workflow_builder_id": null
    },
@@ -185,6 +197,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Approved Internally",
     "workflow_builder_id": null
    },
@@ -197,6 +210,7 @@
     "parent": "Pre-Quotation Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
+    "send_email_to_creator": 0,
     "state": "Converted to Quotation",
     "workflow_builder_id": null
    }

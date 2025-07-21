@@ -232,8 +232,6 @@ def create_quotation_from_pre_quotation(docname):
     quotation = frappe.new_doc("Quotation")
     quotation.transaction_date = nowdate()
     quotation.valid_until = pre_quotation.valid_until
-    quotation.contact_person = pre_quotation.contact_person
-    quotation.contact_email = pre_quotation.contact_email
 
     # Set quotation_to and party_name based on lead or customer
     if pre_quotation.customer:
