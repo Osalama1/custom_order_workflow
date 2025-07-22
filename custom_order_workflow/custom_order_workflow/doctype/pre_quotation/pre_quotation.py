@@ -242,6 +242,19 @@ def create_quotation_from_pre_quotation(docname):
         quotation.quotation_to = "Lead"
         quotation.party_name = pre_quotation.lead
         quotation.lead = pre_quotation.lead
+        # Set company
+    company = frappe.defaults.get_user_default("company")
+    
+
+    # Get default tax template from company
+    default_tax = frappe.db.get_value(
+            "Sales Taxes and Charges Template",
+                    {"company": company, "is_default": 1},
+                                            ["name", "title"],  # Add more fields as needed
+    as_dict=True)
+
+    if default_tax:
+        quotation.taxes_and_charges = default_tax
 
     for item_data in pre_quotation.custom_furniture_items:
         item_code = item_data.item_name

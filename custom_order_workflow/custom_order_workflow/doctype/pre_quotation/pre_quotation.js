@@ -196,7 +196,7 @@ function setup_field_visibility(frm) {
 			// Sales User in Draft state: can edit basic item details
 			if (is_sales_user || frm.doc.__islocal) {
 				frm.set_df_property("custom_furniture_items", "read_only", 0);
-				["item_name", "quantity", "attached_image"].forEach(field => {
+				["item_name", "quantity", "attached_image","description"].forEach(field => {
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "read_only", 0);
 				});
