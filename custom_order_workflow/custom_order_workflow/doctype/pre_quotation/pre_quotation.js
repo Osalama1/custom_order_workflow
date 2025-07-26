@@ -218,7 +218,7 @@ function setup_field_visibility(frm) {
 				frm.set_df_property("custom_furniture_items", "read_only", 0);
 			
 				// Show read-only item basics
-				["item_name", "quantity", "attached_image","description"].forEach(field => {
+				["item_name", "quantity", "attached_image"].forEach(field => {
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "hidden", 0);
 					frm.fields_dict["custom_furniture_items"].grid.update_docfield_property(field, "read_only", 1);
 				});
@@ -226,7 +226,10 @@ function setup_field_visibility(frm) {
 				// Cost per unit: editable
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("cost_per_unit", "hidden", 0);
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("cost_per_unit", "read_only", 0);
-			
+			// "description": editable
+			frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("description", "hidden", 0);
+			frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("description", "read_only", 0);
+		
 				// Total Cost: read-only
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("total_cost", "hidden", 0);
 				frm.fields_dict["custom_furniture_items"].grid.update_docfield_property("total_cost", "read_only", 1);
@@ -239,6 +242,9 @@ function setup_field_visibility(frm) {
 				// Show main form total cost only
 				frm.set_df_property("estimated_total_cost", "hidden", 0);
 				frm.set_df_property("estimated_total_cost", "read_only", 1);
+
+				
+
 			
 				// Hide VAT fields from main form
 				frm.set_df_property("vat_rate", "hidden", 1);
@@ -258,6 +264,7 @@ function setup_field_visibility(frm) {
 
 		case "Costing Done":
 		case "Approved Internally":
+			console.log(is_sales_manager)
 			// Sales Manager view: all cost and pricing fields visible, profit_margin_percent editable
 			if (is_sales_manager) {
 				frm.set_df_property("custom_furniture_items", "read_only", 0);
@@ -283,6 +290,7 @@ function setup_field_visibility(frm) {
 			break;
 
 		case "Converted to Quotation":
+			console.log(is_sales_manager)
 			// Add custom button for creating Quotation
 			if (is_sales_manager) {
 		frm.add_custom_button(__("Create Quotation"), function() {
